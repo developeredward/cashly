@@ -3,12 +3,12 @@ const router = require("express").Router();
 const {
   getNotifications,
   getNotificationById,
-  addNotification,
+  createNotification,
   deleteNotification,
   updateNotification,
 } = require("../controllers/notificationController");
 
-router.route("/").get(getNotifications).post(addNotification);
+router.route("/").get(getNotifications).post(createNotification);
 router
   .route("/:id")
   .get(getNotificationById)
