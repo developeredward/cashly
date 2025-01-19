@@ -1,5 +1,5 @@
-const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
+const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
 
 // @desc    Get all Users
@@ -68,7 +68,7 @@ const addUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
-  const User = await User.create({
+  const user = await User.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
@@ -77,11 +77,11 @@ const addUser = asyncHandler(async (req, res) => {
 
   if (User) {
     res.status(201).json({
-      _id: User._id,
-      name: User.name,
-      email: User.email,
-      currency: User.currency,
-      token: generateToken(User._id),
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      currency: user.currency,
+      token: generateToken(user._id),
     });
   }
 });
