@@ -26,10 +26,6 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields
