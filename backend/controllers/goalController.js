@@ -33,6 +33,21 @@ const createGoal = asynvHandler(async (req, res) => {
   res.status(201).json(createdGoal);
 });
 
+// @desc    Fetch a goal
+// @route   GET /api/goals/:id
+// @access  Private
+
+const getGoal = asynvHandler(async (req, res) => {
+  const goal = await Goal.findById(req.params.id);
+
+  if (goal) {
+    res.json(goal);
+  } else {
+    res.status(404);
+    throw new Error("Goal not found");
+  }
+});
+
 // @desc    Update a goal
 // @route   PUT /api/goals/:id
 // @access  Private
@@ -79,4 +94,4 @@ const deleteGoal = asynvHandler(async (req, res) => {
   }
 });
 
-module.exports = { getGoals, createGoal, updateGoal, deleteGoal };
+module.exports = { getGoals, getGoal, createGoal, updateGoal, deleteGoal };
