@@ -2,17 +2,11 @@ const router = require("express").Router();
 
 const {
   getSettings,
-  getSettingById,
-  addSetting,
-  deleteSetting,
-  updateSetting,
+  createSettings,
+  updateSettings,
 } = require("../controllers/settingController");
 
-router.route("/").get(getSettings).post(addSetting);
-router
-  .route("/:id")
-  .get(getSettingById)
-  .delete(deleteSetting)
-  .put(updateSetting);
+router.route("/").get(getSettings).post(createSettings);
+router.route("/:id").put(updateSettings);
 
 module.exports = router;
