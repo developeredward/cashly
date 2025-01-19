@@ -1,18 +1,21 @@
 const router = require("express").Router();
 
 const {
-  getRecurrings,
-  getRecurringById,
-  addRecurring,
-  deleteRecurring,
-  updateRecurring,
+  getRecurringTransactions,
+  getRecurringTransactionById,
+  createRecurringTransaction,
+  deleteRecurringTransaction,
+  updateRecurringTransaction,
 } = require("../controllers/recurringController");
 
-router.route("/").get(getRecurrings).post(addRecurring);
+router
+  .route("/")
+  .get(getRecurringTransactions)
+  .post(createRecurringTransaction);
 router
   .route("/:id")
-  .get(getRecurringById)
-  .delete(deleteRecurring)
-  .put(updateRecurring);
+  .get(getRecurringTransactionById)
+  .delete(deleteRecurringTransaction)
+  .put(updateRecurringTransaction);
 
 module.exports = router;
