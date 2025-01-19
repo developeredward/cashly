@@ -16,14 +16,14 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/Users/:id
 // @access  Public
 const getUser = asyncHandler(async (req, res) => {
-  const User = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
-  if (!User) {
+  if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
 
-  res.status(200).json(User);
+  res.status(200).json(user);
 });
 
 // @desc    Auth User & get token
@@ -76,7 +76,7 @@ const addUser = asyncHandler(async (req, res) => {
     currency: req.body.currency,
   });
 
-  if (User) {
+  if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
@@ -91,20 +91,25 @@ const addUser = asyncHandler(async (req, res) => {
 // @route   PUT /api/Users/:id
 // @access  Public
 const updateUser = asyncHandler(async (req, res) => {
-  const User = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
-  if (!User) {
+  if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
 
-  User.name = req.body.name || User.name;
-  User.email = req.body.email || User.email;
-  User.currency = req.body.currency || User.currency;
-  User.password = req.body.password || User.password;
-  User.updatedAt = Date.now();
+  if (req.user._id.toString() !== user._id.toString() && !req.user.isAdmin) {
+    res.status(403);
+    throw new Error("You are not authorized to update this user");
+  }
 
-  const updatedUser = await User.save();
+  user.name = req.body.name || user.name;
+  user.email = req.body.email || user.email;
+  user.currency = req.body.currency || user.currency;
+  user.password = req.body.password || user.password;
+  user.updatedAt = Date.now();
+
+  const updatedUser = await user.save();
 
   res.status(200).json(updatedUser);
 });
@@ -114,9 +119,9 @@ const updateUser = asyncHandler(async (req, res) => {
 // @access  Public
 
 const deleteUser = asyncHandler(async (req, res) => {
-  const User = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
-  if (!User) {
+  if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
