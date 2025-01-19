@@ -1,6 +1,7 @@
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
+const bcrypt = require("bcryptjs");
 
 // @desc    Get all Users
 // @route   GET /api/Users
