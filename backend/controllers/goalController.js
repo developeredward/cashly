@@ -48,11 +48,11 @@ const updateGoal = asynvHandler(async (req, res) => {
   const goal = await Goal.findById(req.params.id);
 
   if (goal) {
-    goal.name = name;
-    goal.targetAmount = targetAmount;
-    goal.deadline = deadline;
-    goal.priority = priority;
-    goal.completed = req.body.completed;
+    goal.name = name || goal.name;
+    goal.targetAmount = targetAmount || goal.targetAmount;
+    goal.deadline = deadline || goal.deadline;
+    goal.priority = priority || goal.priority;
+    goal.completed = req.body.completed || goal.completed;
     goal.updatedAt = Date.now();
 
     const updatedGoal = await goal.save();
