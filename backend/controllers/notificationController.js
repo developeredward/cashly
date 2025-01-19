@@ -85,3 +85,11 @@ const deleteNotification = asyncHandler(async (req, res) => {
 
   res.json({ message: "Notification removed" });
 });
+
+module.exports = {
+  getNotifications,
+  createNotification,
+  getNotificationById,
+  updateNotification,
+  deleteNotification,
+};
