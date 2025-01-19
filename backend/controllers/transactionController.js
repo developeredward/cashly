@@ -14,7 +14,7 @@ const getTransactions = asyncHandler(async (req, res) => {
 // @desc    Fetch a single transaction
 // @route   GET /api/transactions/:id
 // @access  Private
-const getTransactionById = asyncHandler(async (req, res) => {
+const getTransaction = asyncHandler(async (req, res) => {
   const transaction = await Transaction.findById(req.params.id).populate(
     "category",
     "name"
@@ -65,7 +65,7 @@ const deleteTransaction = asyncHandler(async (req, res) => {
 
 module.exports = {
   getTransactions,
-  getTransactionById,
+  getTransaction,
   addTransaction,
   deleteTransaction,
 };
