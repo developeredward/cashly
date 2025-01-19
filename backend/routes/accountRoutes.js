@@ -1,17 +1,13 @@
 const router = require("express").Router();
 const {
   getAccounts,
-  getAccountById,
+  getAccount,
   addAccount,
   deleteAccount,
   updateAccount,
 } = require("../controllers/accountController");
 
 router.route("/").get(getAccounts).post(addAccount);
-router
-  .route("/:id")
-  .get(getAccountById)
-  .delete(deleteAccount)
-  .put(updateAccount);
+router.route("/:id").get(getAccount).delete(deleteAccount).put(updateAccount);
 
 module.exports = router;
