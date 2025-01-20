@@ -3,10 +3,23 @@ const Category = require("../models/CategoryModel");
 
 // @desc    Get all Categories
 // @route   GET /api/categories
-// @access  Public
+// @access  Private (User-specific or Admin)
 
 const getCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find();
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  let categories;
+
+  if (req.user.isAdmin) {
+    // Admin can access all categories
+    categories = await Category.find();
+  } else {
+    // Non-admin users can only access their own categories
+    categories = await Category.find({ user: req.user._id });
+  }
 
   res.status(200).json(categories);
 });
@@ -15,7 +28,23 @@ const getCategories = asyncHandler(async (req, res) => {
 // @route   GET /api/categories/:id
 // @access  Public
 const getCategory = asyncHandler(async (req, res) => {
-  const category = await Category.findById(req.params.id);
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  let category;
+
+  if (req.user.isAdmin) {
+    // Admin can access all categories
+    category = await Category.findById(req.params.id);
+  } else {
+    // Non-admin users can only access their own categories
+    category = await Category.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+  }
 
   if (!category) {
     res.status(404);
@@ -34,6 +63,17 @@ const addCategory = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please fill all fields!");
   }
+
+  const categoryExists = await Category.findOne({
+    name: req.body.name,
+    user: req.user._id,
+  });
+
+  if (categoryExists) {
+    res.status(400);
+    throw new Error("Category already exists");
+  }
+
   const category = await Category.create({
     user: req.user._id,
     name: req.body.name,
@@ -49,7 +89,10 @@ const addCategory = asyncHandler(async (req, res) => {
 // @access  Public
 
 const updateCategory = asyncHandler(async (req, res) => {
-  const category = await Category.findById(req.params.id);
+  const category = await Category.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!category) {
     res.status(404);
@@ -67,7 +110,10 @@ const updateCategory = asyncHandler(async (req, res) => {
 // @desc    Delete a Category
 // @route   DELETE /api/categories/:id
 const deleteCategory = asyncHandler(async (req, res) => {
-  const category = await Category.findById(req.params.id);
+  const category = await Category.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!category) {
     res.status(404);
