@@ -6,6 +6,10 @@ const Notification = require("../models/NotificationModel");
 // @route   GET /api/notifications
 // @access  Private
 const getNotifications = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
   const notifications = await Notification.find({ user: req.user._id }).sort({
     createdAt: -1,
   });
@@ -38,7 +42,14 @@ const createNotification = asyncHandler(async (req, res) => {
 // @route   GET /api/notifications/:id
 // @access  Private
 const getNotificationById = asyncHandler(async (req, res) => {
-  const notification = await Notification.findById(req.params.id);
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+  const notification = await Notification.find({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!notification) {
     res.status(404);
@@ -52,7 +63,10 @@ const getNotificationById = asyncHandler(async (req, res) => {
 // @route   PUT /api/notifications/:id
 // @access  Private
 const updateNotification = asyncHandler(async (req, res) => {
-  const notification = await Notification.findById(req.params.id);
+  const notification = await Notification.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!notification) {
     res.status(404);
@@ -74,7 +88,10 @@ const updateNotification = asyncHandler(async (req, res) => {
 // @route   DELETE /api/notifications/:id
 // @access  Private
 const deleteNotification = asyncHandler(async (req, res) => {
-  const notification = await Notification.findById(req.params.id);
+  const notification = await Notification.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!notification) {
     res.status(404);

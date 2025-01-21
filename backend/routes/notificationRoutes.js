@@ -8,11 +8,16 @@ const {
   updateNotification,
 } = require("../controllers/notificationController");
 
-router.route("/").get(getNotifications).post(createNotification);
+const { protect } = require("../middleware/authMiddleware");
+
+router
+  .route("/")
+  .get(protect, getNotifications)
+  .post(protect, createNotification);
 router
   .route("/:id")
-  .get(getNotificationById)
-  .delete(deleteNotification)
-  .put(updateNotification);
+  .get(protect, getNotificationById)
+  .delete(protect, deleteNotification)
+  .put(protect, updateNotification);
 
 module.exports = router;
