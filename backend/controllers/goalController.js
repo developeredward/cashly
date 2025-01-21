@@ -74,11 +74,6 @@ const getGoal = asynvHandler(async (req, res) => {
 const updateGoal = asynvHandler(async (req, res) => {
   const { name, targetAmount, deadline, priority } = req.body;
 
-  if (!name || !targetAmount || !deadline || !priority) {
-    res.status(400);
-    throw new Error("All fields are required");
-  }
-
   const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
