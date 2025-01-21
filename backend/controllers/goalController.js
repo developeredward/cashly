@@ -6,6 +6,11 @@ const Goal = require("../models/GoalModel");
 // @route   GET /api/goals
 // @access  Private
 const getGoals = asynvHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
   const goals = await Goal.find({ user: req.user._id });
   res.json(goals);
 });
@@ -21,7 +26,17 @@ const createGoal = asynvHandler(async (req, res) => {
     throw new Error("All fields are required");
   }
 
-  const goal = new Goal({
+  let goalExists = await Goal.findOne({
+    user: req.user._id,
+    name,
+  });
+
+  if (goalExists) {
+    res.status(400);
+    throw new Error("Goal already exists");
+  }
+
+  const goal = await Goal.create({
     user: req.user._id,
     name,
     targetAmount,
@@ -29,8 +44,7 @@ const createGoal = asynvHandler(async (req, res) => {
     priority,
   });
 
-  const createdGoal = await goal.save();
-  res.status(201).json(createdGoal);
+  res.status(201).json(goal);
 });
 
 // @desc    Fetch a goal
@@ -38,7 +52,12 @@ const createGoal = asynvHandler(async (req, res) => {
 // @access  Private
 
 const getGoal = asynvHandler(async (req, res) => {
-  const goal = await Goal.findById(req.params.id);
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  const goal = await Goal.find({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
     res.json(goal);
@@ -60,7 +79,7 @@ const updateGoal = asynvHandler(async (req, res) => {
     throw new Error("All fields are required");
   }
 
-  const goal = await Goal.findById(req.params.id);
+  const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
     goal.name = name || goal.name;
@@ -83,7 +102,7 @@ const updateGoal = asynvHandler(async (req, res) => {
 // @access  Private
 
 const deleteGoal = asynvHandler(async (req, res) => {
-  const goal = await Goal.findById(req.params.id);
+  const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
     await goal.remove();
