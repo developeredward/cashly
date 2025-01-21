@@ -8,14 +8,16 @@ const {
   updateRecurringTransaction,
 } = require("../controllers/recurringController");
 
+const { protect } = require("../middleware/authMiddleware");
+
 router
   .route("/")
-  .get(getRecurringTransactions)
-  .post(createRecurringTransaction);
+  .get(protect, getRecurringTransactions)
+  .post(protect, createRecurringTransaction);
 router
   .route("/:id")
-  .get(getRecurringTransactionById)
-  .delete(deleteRecurringTransaction)
-  .put(updateRecurringTransaction);
+  .get(protect, getRecurringTransactionById)
+  .delete(protect, deleteRecurringTransaction)
+  .put(protect, updateRecurringTransaction);
 
 module.exports = router;

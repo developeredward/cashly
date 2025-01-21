@@ -5,10 +5,14 @@ const RecurringTransaction = require("../models/RecurringTransactionModel");
 // @route   POST /api/recurring
 // @access  Private
 const createRecurringTransaction = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
   const { accountId, categoryId, type, amount, frequency, startDay, endDay } =
     req.body;
 
-  const recurringTransaction = new RecurringTransaction({
+  let recurringTransactionExists = await RecurringTransaction.findOne({
     user: req.user._id,
     accountId,
     categoryId,
@@ -19,9 +23,23 @@ const createRecurringTransaction = asyncHandler(async (req, res) => {
     endDay,
   });
 
-  const createdRecurringTransaction = await recurringTransaction.save();
+  if (recurringTransactionExists) {
+    res.status(400);
+    throw new Error("Recurring transaction already exists");
+  }
 
-  res.status(201).json(createdRecurringTransaction);
+  const recurringTransaction = await RecurringTransaction.create({
+    user: req.user._id,
+    accountId,
+    categoryId,
+    type,
+    amount,
+    frequency,
+    startDay,
+    endDay,
+  });
+
+  res.status(201).json(recurringTransaction);
 });
 
 // @desc    Get all recurring transactions
@@ -29,6 +47,10 @@ const createRecurringTransaction = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getRecurringTransactions = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
   const recurringTransactions = await RecurringTransaction.find({
     user: req.user._id,
   });
@@ -40,9 +62,14 @@ const getRecurringTransactions = asyncHandler(async (req, res) => {
 // @route   GET /api/recurring/:id
 // @access  Private
 const getRecurringTransactionById = asyncHandler(async (req, res) => {
-  const recurringTransaction = await RecurringTransaction.findById(
-    req.params.id
-  );
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+  const recurringTransaction = await RecurringTransaction.find({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (recurringTransaction) {
     res.json(recurringTransaction);
@@ -59,9 +86,10 @@ const updateRecurringTransaction = asyncHandler(async (req, res) => {
   const { accountId, categoryId, type, amount, frequency, startDay, endDay } =
     req.body;
 
-  const recurringTransaction = await RecurringTransaction.findById(
-    req.params.id
-  );
+  const recurringTransaction = await RecurringTransaction.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (recurringTransaction) {
     recurringTransaction.accountId =
@@ -88,9 +116,10 @@ const updateRecurringTransaction = asyncHandler(async (req, res) => {
 // @access  Private
 
 const deleteRecurringTransaction = asyncHandler(async (req, res) => {
-  const recurringTransaction = await RecurringTransaction.findById(
-    req.params.id
-  );
+  const recurringTransaction = await RecurringTransaction.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (recurringTransaction) {
     await recurringTransaction.remove();
