@@ -6,7 +6,12 @@ const Budget = require("../models/BudgetModel");
 // @route   GET /api/budgets
 // @access  Public
 const getBudgets = asyncHandler(async (req, res) => {
-  const budgets = await Budget.find();
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  const budgets = await Budget.find({ user: req.user._id });
 
   res.status(200).json(budgets);
 });
@@ -15,7 +20,12 @@ const getBudgets = asyncHandler(async (req, res) => {
 // @route   GET /api/budgets/:id
 // @access  Public
 const getBudget = asyncHandler(async (req, res) => {
-  const budget = await Budget.findById(req.params.id);
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  const budget = await Budget.find({ _id: req.params.id, user: req.user._id });
 
   if (!budget) {
     res.status(404);
@@ -39,6 +49,18 @@ const addBudget = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please fill all fields!");
   }
+
+  let budgetExists = await Budget.findOne({
+    user: req.user._id,
+    category: req.body.category,
+    period: req.body.period,
+  });
+
+  if (budgetExists) {
+    res.status(400);
+    throw new Error("Budget already exists for this category and period");
+  }
+
   const budget = await Budget.create({
     user: req.user._id,
     category: req.body.category,
@@ -56,7 +78,10 @@ const addBudget = asyncHandler(async (req, res) => {
 // @access  Public
 
 const updateBudget = asyncHandler(async (req, res) => {
-  const budget = await Budget.findById(req.params.id);
+  const budget = await Budget.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!budget) {
     res.status(404);
@@ -78,7 +103,10 @@ const updateBudget = asyncHandler(async (req, res) => {
 // @access  Public
 
 const deleteBudget = asyncHandler(async (req, res) => {
-  const budget = await Budget.findById(req.params.id);
+  const budget = await Budget.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!budget) {
     res.status(404);
