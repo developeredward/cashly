@@ -7,7 +7,13 @@ const {
   updateBudget,
 } = require("../controllers/budgetController");
 
-router.route("/").get(getBudgets).post(addBudget);
-router.route("/:id").get(getBudget).delete(deleteBudget).put(updateBudget);
+const { protect } = require("../middleware/authMiddleware");
+
+router.route("/").get(protect, getBudgets).post(protect, addBudget);
+router
+  .route("/:id")
+  .get(protect, getBudget)
+  .delete(protect, deleteBudget)
+  .put(protect, updateBudget);
 
 module.exports = router;
