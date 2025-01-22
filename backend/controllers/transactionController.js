@@ -5,6 +5,11 @@ const Transaction = require("../models/TransactionModel");
 // @route   GET /api/transactions
 // @access  Private
 const getTransactions = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
   const transactions = await Transaction.find({
     userId: req.user._id,
   }).populate("category", "name");
@@ -15,10 +20,14 @@ const getTransactions = asyncHandler(async (req, res) => {
 // @route   GET /api/transactions/:id
 // @access  Private
 const getTransaction = asyncHandler(async (req, res) => {
-  const transaction = await Transaction.findById(req.params.id).populate(
-    "category",
-    "name"
-  );
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+  const transaction = await Transaction.find({
+    _id: req.params.id,
+    userId: req.user._id,
+  }).populate("category", "name");
 
   if (transaction) {
     res.json(transaction);
@@ -34,7 +43,26 @@ const getTransaction = asyncHandler(async (req, res) => {
 const addTransaction = asyncHandler(async (req, res) => {
   const { accountId, amount, type, category, date, description } = req.body;
 
-  const transaction = new Transaction({
+  if (!accountId || !amount || !type || !category || !date) {
+    res.status(400);
+    throw new Error("All fields are required");
+  }
+
+  let transactionExists = await Transaction.findOne({
+    userId: req.user._id,
+    accountId,
+    amount,
+    type,
+    category,
+    date,
+  });
+
+  if (transactionExists) {
+    res.status(400);
+    throw new Error("Transaction already exists");
+  }
+
+  const transaction = await Transaction.create({
     userId: req.user._id,
     accountId,
     amount,
@@ -44,15 +72,17 @@ const addTransaction = asyncHandler(async (req, res) => {
     description,
   });
 
-  const createdTransaction = await transaction.save();
-  res.status(201).json(createdTransaction);
+  res.status(201).json(transaction);
 });
 
 // @desc    Delete a transaction
 // @route   DELETE /api/transactions/:id
 // @access  Private
 const deleteTransaction = asyncHandler(async (req, res) => {
-  const transaction = await Transaction.findById(req.params.id);
+  const transaction = await Transaction.findOne({
+    _id: req.params.id,
+    userId: req.user._id,
+  });
 
   if (transaction) {
     await transaction.remove();
