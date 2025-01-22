@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 
 // @desc    Get all Users
 // @route   GET /api/Users
-// @access  Public
+// @access  Private
 const getUsers = asyncHandler(async (req, res) => {
   const Users = await User.find();
 
@@ -14,13 +14,16 @@ const getUsers = asyncHandler(async (req, res) => {
 
 // @desc    Get single User
 // @route   GET /api/Users/:id
-// @access  Public
+// @access  Private
 const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
-  if (!user) {
-    res.status(404);
-    throw new Error("User not found");
+  if (
+    req.user._id.toString() !== req.params.id.toString() &&
+    !req.user.isAdmin
+  ) {
+    res.status(403);
+    throw new Error("You are not authorized to access this user's information");
   }
 
   res.status(200).json(user);
@@ -89,7 +92,7 @@ const addUser = asyncHandler(async (req, res) => {
 
 // @desc    Update a User
 // @route   PUT /api/Users/:id
-// @access  Public
+// @access  Private
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
@@ -116,7 +119,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 // @desc    Delete a User
 // @route   DELETE /api/Users/:id
-// @access  Public
+// @access  Private
 
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -125,6 +128,12 @@ const deleteUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
+
+  if (req.user._id.toString() !== user._id.toString() && !req.user.isAdmin) {
+    res.status(403);
+    throw new Error("You are not authorized to delete this user");
+  }
+
   await User.deleteOne();
 
   res.status(200).json({ message: "User removed" });
