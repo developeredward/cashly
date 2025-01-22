@@ -1,3 +1,5 @@
-# cashly
+### Cashly
+
+---
 
 ## Personal Finance Manager
