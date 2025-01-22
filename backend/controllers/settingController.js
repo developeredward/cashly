@@ -5,6 +5,10 @@ const Setting = require("../models/SettingModel");
 // @route   GET /api/settings
 // @access  Private
 const getSettings = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
   const settings = await Setting.find({ user: req.user._id });
   res.json(settings);
 });
@@ -14,13 +18,19 @@ const getSettings = asyncHandler(async (req, res) => {
 // @access Private
 const createSettings = asyncHandler(async (req, res) => {
   const { theme, notificationsEnabled, preferredLanguage } = req.body;
-  const settings = new Setting({
+
+  let settingsExists = await Setting.findOne({ user: req.user._id });
+
+  if (settingsExists) {
+    res.status(400);
+    throw new Error("Settings already exists");
+  }
+  const settings = await Setting.create({
     user: req.user._id,
     theme,
     notificationsEnabled,
     preferredLanguage,
   });
-  const createdSettings = await settings.save();
   res.status(201).json(createdSettings);
 });
 
@@ -34,21 +44,18 @@ const updateSettings = asyncHandler(async (req, res) => {
   const settings = await Setting.findOne({ user: req.user._id });
 
   if (settings) {
-    settings.theme = theme;
-    settings.notificationsEnabled = notificationsEnabled;
-    settings.preferredLanguage = preferredLanguage;
+    settings.theme = theme || settings.theme;
+    settings.notificationsEnabled =
+      notificationsEnabled || settings.notificationsEnabled;
+    settings.preferredLanguage =
+      preferredLanguage || settings.preferredLanguage;
+
+    const updatedSettings = await settings.save();
+    res.json(updatedSettings);
   } else {
-    settings = new Setting({
-      user: req.user._id,
-      theme,
-      notificationsEnabled,
-      preferredLanguage,
-    });
+    res.status(404);
+    throw new Error("Settings not found");
   }
-
-  const updatedSettings = await settings.save();
-
-  res.json(updatedSettings);
 });
 
 module.exports = { createSettings, getSettings, updateSettings };

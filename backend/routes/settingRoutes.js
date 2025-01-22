@@ -6,7 +6,9 @@ const {
   updateSettings,
 } = require("../controllers/settingController");
 
-router.route("/").get(getSettings).post(createSettings);
-router.route("/:id").put(updateSettings);
+const { protect } = require("../middleware/authMiddleware");
+
+router.route("/").get(protect, getSettings).post(protect, createSettings);
+router.route("/:id").put(protect, updateSettings);
 
 module.exports = router;
