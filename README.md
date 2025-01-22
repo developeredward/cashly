@@ -12,3 +12,5 @@
 ## Front-End
 
 - [x] React.js
+- [x] React Native
+- [x] Expo
