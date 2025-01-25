@@ -24,16 +24,25 @@ const Welcome = ({ logo }: WelcomeProps) => {
         <TouchableOpacity
           style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
         >
-          <Text style={{ color: colors.text }}>Get Started</Text>
+          <Text style={{ color: colors.background }}>Get Started</Text>
         </TouchableOpacity>
-        <Text style={styles.label}>
-          Already have an account?{" "}
+        <View style={styles.footer}>
+          <Text style={[styles.label, { color: colors.text, opacity: 0.5 }]}>
+            Already have an account?{" "}
+          </Text>
           <TouchableOpacity>
-            <Text style={[styles.label, { color: colors.notification }]}>
+            <Text
+              style={[
+                styles.loginText,
+                {
+                  color: colors.primary,
+                },
+              ]}
+            >
               Login
             </Text>
           </TouchableOpacity>
-        </Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -62,12 +71,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  footer: {
+    flexDirection: "row", // Ensure horizontal alignment
+    justifyContent: "center", // Center content horizontally
+    marginTop: 30,
+    alignItems: "center", // Center items vertically
+  },
   label: {
-    marginTop: 20,
-    color: "#9E9E9E",
     fontSize: 16,
     textAlign: "center",
-    justifyContent: "center",
+  },
+  loginText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
