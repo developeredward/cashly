@@ -1,9 +1,7 @@
-import { Text, Image, View, StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import Welcome from "../components/Welcome";
+import RootLayoutNav from "./_layout";
 
 const App = () => {
-  return <Welcome />;
+  return <RootLayoutNav />;
 };
 
 export default App;

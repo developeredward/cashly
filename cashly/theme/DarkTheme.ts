@@ -33,12 +33,10 @@ const DarkTheme = {
     background: "#121212",
     text: "#E0E0E0",
     accent: "#26C6DA",
-
     card: "#ffffff",
-
     border: "#e0e0e0",
-
     notification: "#ff80ab",
   },
+  logo: { url: require("../assets/dark-logo.png") },
 };
 export default DarkTheme;

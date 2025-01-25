@@ -36,5 +36,6 @@ const LightTheme = {
     border: "#e0e0e0",
     notification: "#ff80ab",
   },
+  logo: { url: require("../assets/logo.png") },
 };
 export default LightTheme;
