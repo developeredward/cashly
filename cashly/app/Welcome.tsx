@@ -21,6 +21,11 @@ const Welcome = ({ logo }: WelcomeProps) => {
           Track Your Expenses Effortlessly with{" "}
           <Text style={{ color: colors.primary }}>Cashly</Text>
         </Text>
+        <Text style={[styles.subtitle, { color: colors.text, marginTop: 20 }]}>
+          Take control of your finances with our user-friendly platform. Set
+          personalized financial goals and effortlessly monitor your progress
+          along the way, all in one convenient place.{" "}
+        </Text>
         <TouchableOpacity
           style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
         >
@@ -39,6 +44,7 @@ const Welcome = ({ logo }: WelcomeProps) => {
                 },
               ]}
             >
+              {" "}
               Login
             </Text>
           </TouchableOpacity>
@@ -51,22 +57,26 @@ const Welcome = ({ logo }: WelcomeProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Ensure this takes full screen height
-    // paddingTop: 10,
     paddingLeft: 30,
     paddingRight: 30,
     height: "100%", // Ensure the container stretches fully
   },
   content: {
     justifyContent: "center",
-    top: "40%",
+    top: "30%",
   },
   title: {
     fontSize: 50,
   },
+  subtitle: {
+    fontSize: 15,
+    marginTop: 10,
+    opacity: 0.5,
+  },
   primaryBtn: {
     height: 50,
     borderRadius: 50,
-    marginTop: 50,
+    marginTop: 90,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
