@@ -34,7 +34,9 @@ const LightTheme = {
     accent: "#009688", // Corrected hex code format
     card: "#ffffff",
     border: "#e0e0e0",
-    notification: "#ff80ab",
+    notification: "#D32F2F",
+    success: "#388E3C", // Dark green for success
+    // danger: "#D32F2F", // Red for danger
   },
   logo: { url: require("../assets/logo.png") },
 };

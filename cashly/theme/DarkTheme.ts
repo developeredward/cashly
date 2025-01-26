@@ -35,7 +35,9 @@ const DarkTheme = {
     accent: "#26C6DA",
     card: "#ffffff",
     border: "#e0e0e0",
-    notification: "#ff80ab",
+    notification: "#D32F2F",
+    success: "#4CAF50", // Green for success
+    danger: "#D32F2F", // Dark red for danger
   },
   logo: { url: require("../assets/dark-logo.png") },
 };
