@@ -18,7 +18,7 @@ const CloseBtn = ({ onPress, extraStyles }: CloseBtnProps) => {
         extraStyles,
       ]}
     >
-      <Text style={{ color: colors.text }}>X</Text>
+      <Text style={{ color: "#ffffff" }}>X</Text>
     </TouchableOpacity>
   );
 };
