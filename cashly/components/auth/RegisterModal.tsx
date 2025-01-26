@@ -12,6 +12,7 @@ import React from "react";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
 import CloseBtn from "../Buttons/CloseBtn";
 import validateRegister from "../../validators/registerValidator";
+import { useAuth } from "../../context/AppContext";
 
 interface RegisterProps {
   visible: boolean;
@@ -20,6 +21,7 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ visible, close }) => {
   const { colors } = useTheme();
+  const { register } = useAuth();
   const [fullName, setFullName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -29,8 +31,9 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
     email?: string;
     password?: string;
   }>({});
+  const [signUpError, setSignUpError] = React.useState<string>("");
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     const { isValid, errors } = validateRegister(
       fullName,
       email,
@@ -39,8 +42,18 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
     );
     if (!isValid) {
       setErrors(errors);
-    } else {
-      console.log({ fullName, email, password });
+      setSignUpError("");
+      return;
+    }
+
+    try {
+      const data = await register!(fullName, email, password);
+      console.log("User registered successfully:", data);
+      // Navigate to the dashboard or show a success message
+    } catch (error: any) {
+      // Display the error message to the user
+      console.log("Error registering user:", error.message);
+      setSignUpError(error.message);
     }
   };
   return (
@@ -138,6 +151,11 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
                 { borderBottomColor: colors.primary, color: colors.text },
               ]}
             ></TextInput>
+            {signUpError && (
+              <Text style={{ color: colors.notification, textAlign: "center" }}>
+                {signUpError}
+              </Text>
+            )}
 
             <PrimaryBtn
               onPress={handleSignup}
