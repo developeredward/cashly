@@ -10,6 +10,7 @@ import { useTheme } from "@react-navigation/native";
 import React from "react";
 import validateLogin from "../../validators/loginValidator";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
+import CloseBtn from "../Buttons/CloseBtn";
 
 interface LoginProps {
   visible: boolean;
@@ -45,12 +46,7 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
         <View
           style={[styles.modalContent, { backgroundColor: colors.background }]}
         >
-          <TouchableOpacity
-            style={[styles.closeBtn, { backgroundColor: colors.notification }]}
-            onPress={() => close()}
-          >
-            <Text style={{ color: colors.text, fontSize: 20 }}>X</Text>
-          </TouchableOpacity>
+          <CloseBtn onPress={close} />
           <Text style={[styles.title, { color: colors.text }]}>
             Welcome back
           </Text>
@@ -136,17 +132,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     width: "100%",
-  },
-  closeBtn: {
-    width: 35,
-    height: 35,
-    position: "absolute",
-    top: 10,
-    right: 10,
-    textAlign: "center",
-    justifyContent: "center",
-    borderRadius: 50,
-    alignItems: "center",
   },
   form: {
     marginTop: 60,
