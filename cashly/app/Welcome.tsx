@@ -1,8 +1,18 @@
-import { Text, Image, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import {
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ImageSourcePropType } from "react-native";
+import Login from "../components/auth/LoginModal";
+import Register from "../components/auth/RegisterModal";
 
 interface WelcomeProps {
   logo: ImageSourcePropType;
@@ -10,6 +20,22 @@ interface WelcomeProps {
 
 const Welcome = ({ logo }: WelcomeProps) => {
   const { colors } = useTheme();
+  const [modalVisible, setModalVisible] = useState({
+    login: false,
+    register: false,
+  });
+  // const [loginModalVisible, setLoginModalVisible] = useState(false);
+  // const [registerModalVisible, setRegisterModalVisible] = useState(false);
+
+  const openLoginModal = () => {
+    setModalVisible({ login: true, register: false });
+    console.log("Login modal opened");
+  };
+
+  const openRegisterModal = () => {
+    setModalVisible({ login: false, register: true });
+    console.log("Register modal opened");
+  };
 
   return (
     <SafeAreaView
@@ -27,6 +53,7 @@ const Welcome = ({ logo }: WelcomeProps) => {
           along the way, all in one convenient place.{" "}
         </Text>
         <TouchableOpacity
+          onPress={() => openRegisterModal()}
           style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
         >
           <Text style={{ color: colors.background }}>Get Started</Text>
@@ -35,7 +62,7 @@ const Welcome = ({ logo }: WelcomeProps) => {
           <Text style={[styles.label, { color: colors.text, opacity: 0.5 }]}>
             Already have an account?{" "}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => openLoginModal()}>
             <Text
               style={[
                 styles.loginText,
@@ -49,6 +76,18 @@ const Welcome = ({ logo }: WelcomeProps) => {
             </Text>
           </TouchableOpacity>
         </View>
+        {modalVisible.login && (
+          <Login
+            visible={modalVisible.login}
+            close={() => setModalVisible({ login: false, register: false })}
+          />
+        )}
+        {modalVisible.register && (
+          <Register
+            visible={modalVisible.register}
+            close={() => setModalVisible({ login: false, register: false })}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
