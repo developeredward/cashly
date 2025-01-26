@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ImageSourcePropType } from "react-native";
 import Login from "../components/auth/LoginModal";
 import Register from "../components/auth/RegisterModal";
+import PrimaryBtn from "../components/Buttons/PrimaryBtn";
 
 interface WelcomeProps {
   logo: ImageSourcePropType;
@@ -52,12 +53,11 @@ const Welcome = ({ logo }: WelcomeProps) => {
           personalized financial goals and effortlessly monitor your progress
           along the way, all in one convenient place.{" "}
         </Text>
-        <TouchableOpacity
-          onPress={() => openRegisterModal()}
-          style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
-        >
-          <Text style={{ color: colors.background }}>Get Started</Text>
-        </TouchableOpacity>
+        <PrimaryBtn
+          onPress={openRegisterModal}
+          extraStyles={{ marginTop: 90 }}
+          title="Get Started"
+        />
         <View style={styles.footer}>
           <Text style={[styles.label, { color: colors.text, opacity: 0.5 }]}>
             Already have an account?{" "}
@@ -112,14 +112,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     opacity: 0.5,
   },
-  primaryBtn: {
-    height: 50,
-    borderRadius: 50,
-    marginTop: 90,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   footer: {
     flexDirection: "row", // Ensure horizontal alignment
     justifyContent: "center", // Center content horizontally

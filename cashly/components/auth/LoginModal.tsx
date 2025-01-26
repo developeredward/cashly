@@ -6,10 +6,10 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
 import validateLogin from "../../validators/loginValidator";
+import PrimaryBtn from "../Buttons/PrimaryBtn";
 
 interface LoginProps {
   visible: boolean;
@@ -97,17 +97,11 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
             <TouchableOpacity>
               <Text style={{ color: colors.primary }}>Forgot password?</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                handleLogin();
-              }}
-              style={[
-                styles.primaryBtn,
-                { backgroundColor: colors.primary, marginTop: 20 },
-              ]}
-            >
-              <Text style={{ color: colors.background }}>Login</Text>
-            </TouchableOpacity>
+            <PrimaryBtn
+              onPress={handleLogin}
+              extraStyles={{ marginTop: 40 }}
+              title="Login"
+            />
           </View>
         </View>
       </View>
@@ -163,14 +157,6 @@ const styles = StyleSheet.create({
     // padding: 5,
     height: 50,
     marginBottom: 30,
-  },
-  primaryBtn: {
-    top: 20,
-    height: 50,
-    borderRadius: 50,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 
