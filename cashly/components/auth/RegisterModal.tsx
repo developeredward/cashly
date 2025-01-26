@@ -3,12 +3,15 @@ import {
   Text,
   StyleSheet,
   Modal,
-  Alert,
+  TextInput,
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
+import PrimaryBtn from "../Buttons/PrimaryBtn";
+import CloseBtn from "../Buttons/CloseBtn";
+import validateRegister from "../../validators/registerValidator";
 
 interface RegisterProps {
   visible: boolean;
@@ -17,6 +20,29 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ visible, close }) => {
   const { colors } = useTheme();
+  const [fullName, setFullName] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [password2, setPassword2] = React.useState<string>("");
+  const [errors, setErrors] = React.useState<{
+    fullName?: string;
+    email?: string;
+    password?: string;
+  }>({});
+
+  const handleSignup = () => {
+    const { isValid, errors } = validateRegister(
+      fullName,
+      email,
+      password,
+      password2
+    );
+    if (!isValid) {
+      setErrors(errors);
+    } else {
+      console.log({ fullName, email, password });
+    }
+  };
   return (
     <Modal
       transparent={true} // Makes the background of the modal transparent
@@ -30,13 +56,95 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
         <View
           style={[styles.modalContent, { backgroundColor: colors.background }]}
         >
-          <TouchableOpacity
-            style={[styles.closeBtn, { backgroundColor: colors.notification }]}
-            onPress={() => close()}
-          >
-            <Text style={{ color: colors.text }}>X</Text>
-          </TouchableOpacity>
-          <Text style={{ color: colors.text }}>Register</Text>
+          <CloseBtn onPress={close} />
+          <Text style={[styles.title, { color: colors.text }]}>
+            Create an Account
+          </Text>
+          <View style={styles.form}>
+            {errors.fullName ? (
+              <Text style={{ color: colors.notification }}>
+                {errors.fullName}
+              </Text>
+            ) : (
+              <Text style={{ color: colors.text }}>Full Name</Text>
+            )}
+            <TextInput
+              placeholder="Enter your full name"
+              value={fullName}
+              onChangeText={(text) => {
+                setFullName(text);
+                setErrors({ ...errors, fullName: "" });
+              }}
+              style={[
+                styles.input,
+                { borderBottomColor: colors.primary, color: colors.text },
+              ]}
+            ></TextInput>
+            {errors.email ? (
+              <Text style={{ color: colors.notification }}>{errors.email}</Text>
+            ) : (
+              <Text style={{ color: colors.text }}>Email</Text>
+            )}
+
+            <TextInput
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text.toLowerCase());
+                setErrors({ ...errors, email: "" });
+              }}
+              style={[
+                styles.input,
+                { borderBottomColor: colors.primary, color: colors.text },
+              ]}
+            ></TextInput>
+            {errors.password ? (
+              <Text style={{ color: colors.notification }}>
+                {errors.password}
+              </Text>
+            ) : (
+              <Text style={{ color: colors.text }}>Password</Text>
+            )}
+            <TextInput
+              placeholder="Password"
+              secureTextEntry={true}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setErrors({ ...errors, password: "" });
+              }}
+              style={[
+                styles.input,
+                { borderBottomColor: colors.primary, color: colors.text },
+              ]}
+            ></TextInput>
+            {errors.password ? (
+              <Text style={{ color: colors.notification }}>
+                {errors.password}
+              </Text>
+            ) : (
+              <Text style={{ color: colors.text }}>Confirm Password</Text>
+            )}
+            <TextInput
+              placeholder="Confirm Password"
+              secureTextEntry={true}
+              value={password2}
+              onChangeText={(text) => {
+                setPassword2(text);
+                setErrors({ ...errors, password: "" });
+              }}
+              style={[
+                styles.input,
+                { borderBottomColor: colors.primary, color: colors.text },
+              ]}
+            ></TextInput>
+
+            <PrimaryBtn
+              onPress={handleSignup}
+              extraStyles={{ marginTop: 40 }}
+              title="Register"
+            />
+          </View>
         </View>
       </View>
     </Modal>
@@ -52,9 +160,9 @@ const styles = StyleSheet.create({
     height: "1000%",
   },
   modalContent: {
-    flexDirection: "row",
     width: "90%", // 80% of the screen width
-    height: "60%", // 60% of the screen height
+    height: "75%", // 60% of the screen height
+    padding: 20,
     borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -62,16 +170,24 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // Adds shadow for Android
   },
-  closeBtn: {
-    width: 35,
-    height: 35,
-    position: "absolute",
-    top: 10,
-    right: 10,
-    textAlign: "center",
+  title: {
+    marginTop: 50,
+    fontSize: 25,
+    fontWeight: "bold",
     justifyContent: "center",
-    borderRadius: 50,
     alignItems: "center",
+    textAlign: "center",
+    width: "100%",
+  },
+  form: {
+    marginTop: 60,
+    width: "100%",
+  },
+  input: {
+    borderBottomWidth: 1,
+    // padding: 5,
+    height: 50,
+    marginBottom: 30,
   },
 });
 
