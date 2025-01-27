@@ -12,7 +12,7 @@ import validateLogin from "../../validators/loginValidator";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
 import CloseBtn from "../Buttons/CloseBtn";
 import { useAuth } from "../../context/AppContext";
-
+import Loading from "../LoadingSpinner";
 interface LoginProps {
   visible: boolean;
   close: () => void;
@@ -20,7 +20,7 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ visible, close }) => {
   const { colors } = useTheme();
-  const { login } = useAuth();
+  const { login, authState } = useAuth();
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [errors, setErrors] = React.useState<{
@@ -57,68 +57,79 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
       }}
     >
       <View style={styles.modalContainer}>
-        <View
-          style={[styles.modalContent, { backgroundColor: colors.background }]}
-        >
-          <CloseBtn onPress={close} />
-          <Text style={[styles.title, { color: colors.text }]}>
-            Welcome back
-          </Text>
-          <View style={styles.form}>
-            {errors.email ? (
-              <Text style={{ color: colors.notification }}>{errors.email}</Text>
-            ) : (
-              <Text style={{ color: colors.text }}>Email</Text>
-            )}
+        {authState?.loading ? (
+          <Loading color={colors.primary} />
+        ) : (
+          <View
+            style={[
+              styles.modalContent,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <CloseBtn onPress={close} />
+            <Text style={[styles.title, { color: colors.text }]}>
+              Welcome back
+            </Text>
+            <View style={styles.form}>
+              {errors.email ? (
+                <Text style={{ color: colors.notification }}>
+                  {errors.email}
+                </Text>
+              ) : (
+                <Text style={{ color: colors.text }}>Email</Text>
+              )}
 
-            <TextInput
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text.toLowerCase());
-                setErrors({ ...errors, email: "" });
-              }}
-              style={[
-                styles.input,
-                { borderBottomColor: colors.primary, color: colors.text },
-              ]}
-            ></TextInput>
-            {errors.password ? (
-              <Text style={{ color: colors.notification }}>
-                {errors.password}
-              </Text>
-            ) : (
-              <Text style={{ color: colors.text }}>Password</Text>
-            )}
-            {/* <Text style={{ color: colors.text }}>Password</Text> */}
-            <TextInput
-              placeholder="Password"
-              secureTextEntry={true}
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                setErrors({ ...errors, password: "" });
-              }}
-              style={[
-                styles.input,
-                { borderBottomColor: colors.primary, color: colors.text },
-              ]}
-            ></TextInput>
-            <TouchableOpacity>
-              <Text style={{ color: colors.primary }}>Forgot password?</Text>
-            </TouchableOpacity>
-            {loginError && (
-              <Text style={{ color: colors.notification, textAlign: "center" }}>
-                {loginError}
-              </Text>
-            )}
-            <PrimaryBtn
-              onPress={handleLogin}
-              extraStyles={{ marginTop: 40 }}
-              title="Login"
-            />
+              <TextInput
+                placeholder="Enter your email"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text.toLowerCase());
+                  setErrors({ ...errors, email: "" });
+                }}
+                style={[
+                  styles.input,
+                  { borderBottomColor: colors.primary, color: colors.text },
+                ]}
+              ></TextInput>
+              {errors.password ? (
+                <Text style={{ color: colors.notification }}>
+                  {errors.password}
+                </Text>
+              ) : (
+                <Text style={{ color: colors.text }}>Password</Text>
+              )}
+              {/* <Text style={{ color: colors.text }}>Password</Text> */}
+              <TextInput
+                placeholder="Password"
+                secureTextEntry={true}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrors({ ...errors, password: "" });
+                }}
+                style={[
+                  styles.input,
+                  { borderBottomColor: colors.primary, color: colors.text },
+                ]}
+              ></TextInput>
+              <TouchableOpacity>
+                <Text style={{ color: colors.primary }}>Forgot password?</Text>
+              </TouchableOpacity>
+              {loginError && (
+                <Text
+                  style={{ color: colors.notification, textAlign: "center" }}
+                >
+                  {loginError}
+                </Text>
+              )}
+              <PrimaryBtn
+                onPress={handleLogin}
+                extraStyles={{ marginTop: 40 }}
+                title="Login"
+              />
+            </View>
           </View>
-        </View>
+        )}
       </View>
     </Modal>
   );

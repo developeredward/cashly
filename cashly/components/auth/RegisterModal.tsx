@@ -13,6 +13,7 @@ import PrimaryBtn from "../Buttons/PrimaryBtn";
 import CloseBtn from "../Buttons/CloseBtn";
 import validateRegister from "../../validators/registerValidator";
 import { useAuth } from "../../context/AppContext";
+import Loading from "../LoadingSpinner";
 
 interface RegisterProps {
   visible: boolean;
@@ -21,7 +22,7 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ visible, close }) => {
   const { colors } = useTheme();
-  const { register } = useAuth();
+  const { register, authState } = useAuth();
   const [fullName, setFullName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -32,6 +33,7 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
     password?: string;
   }>({});
   const [signUpError, setSignUpError] = React.useState<string>("");
+  // const [loading, setLoading] = React.useState<boolean>(false);
 
   const handleSignup = async () => {
     const { isValid, errors } = validateRegister(
@@ -47,6 +49,7 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
     }
 
     try {
+      // setLoading(true);
       const data = await register!(fullName, email, password);
       console.log("User registered successfully:", data);
       // Navigate to the dashboard or show a success message
@@ -54,7 +57,9 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
       // Display the error message to the user
       console.log("Error registering user:", error.message);
       setSignUpError(error.message);
+      // setLoading(false);
     }
+    // setLoading(false);
   };
   return (
     <Modal
@@ -66,104 +71,115 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
       }}
     >
       <View style={styles.modalContainer}>
-        <View
-          style={[styles.modalContent, { backgroundColor: colors.background }]}
-        >
-          <CloseBtn onPress={close} />
-          <Text style={[styles.title, { color: colors.text }]}>
-            Create an Account
-          </Text>
-          <View style={styles.form}>
-            {errors.fullName ? (
-              <Text style={{ color: colors.notification }}>
-                {errors.fullName}
-              </Text>
-            ) : (
-              <Text style={{ color: colors.text }}>Full Name</Text>
-            )}
-            <TextInput
-              placeholder="Enter your full name"
-              value={fullName}
-              onChangeText={(text) => {
-                setFullName(text);
-                setErrors({ ...errors, fullName: "" });
-              }}
-              style={[
-                styles.input,
-                { borderBottomColor: colors.primary, color: colors.text },
-              ]}
-            ></TextInput>
-            {errors.email ? (
-              <Text style={{ color: colors.notification }}>{errors.email}</Text>
-            ) : (
-              <Text style={{ color: colors.text }}>Email</Text>
-            )}
+        {authState?.loading ? (
+          <Loading color={colors.primary} />
+        ) : (
+          <View
+            style={[
+              styles.modalContent,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <CloseBtn onPress={close} />
+            <Text style={[styles.title, { color: colors.text }]}>
+              Create an Account
+            </Text>
+            <View style={styles.form}>
+              {errors.fullName ? (
+                <Text style={{ color: colors.notification }}>
+                  {errors.fullName}
+                </Text>
+              ) : (
+                <Text style={{ color: colors.text }}>Full Name</Text>
+              )}
+              <TextInput
+                placeholder="Enter your full name"
+                value={fullName}
+                onChangeText={(text) => {
+                  setFullName(text);
+                  setErrors({ ...errors, fullName: "" });
+                }}
+                style={[
+                  styles.input,
+                  { borderBottomColor: colors.primary, color: colors.text },
+                ]}
+              ></TextInput>
+              {errors.email ? (
+                <Text style={{ color: colors.notification }}>
+                  {errors.email}
+                </Text>
+              ) : (
+                <Text style={{ color: colors.text }}>Email</Text>
+              )}
 
-            <TextInput
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text.toLowerCase());
-                setErrors({ ...errors, email: "" });
-              }}
-              style={[
-                styles.input,
-                { borderBottomColor: colors.primary, color: colors.text },
-              ]}
-            ></TextInput>
-            {errors.password ? (
-              <Text style={{ color: colors.notification }}>
-                {errors.password}
-              </Text>
-            ) : (
-              <Text style={{ color: colors.text }}>Password</Text>
-            )}
-            <TextInput
-              placeholder="Password"
-              secureTextEntry={true}
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                setErrors({ ...errors, password: "" });
-              }}
-              style={[
-                styles.input,
-                { borderBottomColor: colors.primary, color: colors.text },
-              ]}
-            ></TextInput>
-            {errors.password ? (
-              <Text style={{ color: colors.notification }}>
-                {errors.password}
-              </Text>
-            ) : (
-              <Text style={{ color: colors.text }}>Confirm Password</Text>
-            )}
-            <TextInput
-              placeholder="Confirm Password"
-              secureTextEntry={true}
-              value={password2}
-              onChangeText={(text) => {
-                setPassword2(text);
-                setErrors({ ...errors, password: "" });
-              }}
-              style={[
-                styles.input,
-                { borderBottomColor: colors.primary, color: colors.text },
-              ]}
-            ></TextInput>
-            {signUpError && (
-              <Text style={{ color: colors.notification, textAlign: "center" }}>
-                {signUpError}
-              </Text>
-            )}
+              <TextInput
+                placeholder="Enter your email"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text.toLowerCase());
+                  setErrors({ ...errors, email: "" });
+                }}
+                style={[
+                  styles.input,
+                  { borderBottomColor: colors.primary, color: colors.text },
+                ]}
+              ></TextInput>
+              {errors.password ? (
+                <Text style={{ color: colors.notification }}>
+                  {errors.password}
+                </Text>
+              ) : (
+                <Text style={{ color: colors.text }}>Password</Text>
+              )}
+              <TextInput
+                placeholder="Password"
+                secureTextEntry={true}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrors({ ...errors, password: "" });
+                }}
+                style={[
+                  styles.input,
+                  { borderBottomColor: colors.primary, color: colors.text },
+                ]}
+              ></TextInput>
+              {errors.password ? (
+                <Text style={{ color: colors.notification }}>
+                  {errors.password}
+                </Text>
+              ) : (
+                <Text style={{ color: colors.text }}>Confirm Password</Text>
+              )}
+              <TextInput
+                placeholder="Confirm Password"
+                secureTextEntry={true}
+                value={password2}
+                onChangeText={(text) => {
+                  setPassword2(text);
+                  setErrors({ ...errors, password: "" });
+                }}
+                style={[
+                  styles.input,
+                  { borderBottomColor: colors.primary, color: colors.text },
+                ]}
+              ></TextInput>
+              {signUpError && (
+                <Text
+                  style={{ color: colors.notification, textAlign: "center" }}
+                >
+                  {signUpError}
+                </Text>
+              )}
 
-            <PrimaryBtn
-              onPress={handleSignup}
-              extraStyles={{ marginTop: 40 }}
-              title="Register"
-            />
+              <PrimaryBtn
+                onPress={handleSignup}
+                extraStyles={{ marginTop: 40 }}
+                title="Register"
+              />
+            </View>
           </View>
-        </View>
+        )}
       </View>
     </Modal>
   );
