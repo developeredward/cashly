@@ -3,7 +3,11 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 interface AuthContextProps {
-  authState?: { token: string | null; authenticated: Boolean };
+  authState?: {
+    token: string | null;
+    authenticated: Boolean;
+    loading: Boolean;
+  };
   login?: (email: string, password: string) => Promise<any>;
   register?: (name: string, email: string, password: string) => Promise<any>;
   getProfile?: () => Promise<any>;
@@ -25,21 +29,24 @@ export const AuthProvider = ({ children }: any) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     authenticated: Boolean;
+    loading: Boolean;
   }>({
     token: null,
     authenticated: false,
+    loading: false,
   });
 
   useEffect(() => {
     const checkAuthenticated = async () => {
+      setAuthState({ ...authState, loading: true });
       const token = await SecureStore.getItemAsync("token");
       console.log("stored token::" + token);
 
       if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        setAuthState({ token: token, authenticated: true });
+        setAuthState({ token: token, authenticated: true, loading: false });
       } else {
-        setAuthState({ token: null, authenticated: false });
+        setAuthState({ token: null, authenticated: false, loading: false });
       }
     };
     checkAuthenticated();
@@ -47,6 +54,7 @@ export const AuthProvider = ({ children }: any) => {
 
   const login = async (email: string, password: string) => {
     try {
+      setAuthState({ ...authState, loading: true });
       const response = await axios.post(`${API_URL}users/login`, {
         email,
         password,
@@ -54,7 +62,11 @@ export const AuthProvider = ({ children }: any) => {
 
       if (response.status === 200) {
         await SecureStore.setItemAsync("token", response.data.token);
-        setAuthState({ token: response.data.token, authenticated: true });
+        setAuthState({
+          token: response.data.token,
+          authenticated: true,
+          loading: false,
+        });
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${response.data.token}`;
@@ -63,6 +75,7 @@ export const AuthProvider = ({ children }: any) => {
       return response.data;
     } catch (error: any) {
       // Check if the error is a response error from the server
+      setAuthState({ ...authState, loading: false });
       if (
         error.response &&
         error.response.data &&
@@ -76,21 +89,25 @@ export const AuthProvider = ({ children }: any) => {
   };
 
   const getProfile = async () => {
+    setAuthState({ ...authState, loading: true });
     const token = await SecureStore.getItemAsync("token");
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      setAuthState({ ...authState, loading: false });
       try {
         const response = await axios.get(`${API_URL}users/profile/:id`);
-
+        setAuthState({ ...authState, loading: false });
         return response.data;
       } catch (error) {
         console.log(error);
+        setAuthState({ ...authState, loading: false });
       }
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
     try {
+      setAuthState({ ...authState, loading: true });
       const response = await axios.post(`${API_URL}users/`, {
         name,
         email,
@@ -101,6 +118,7 @@ export const AuthProvider = ({ children }: any) => {
       return response.data;
     } catch (error: any) {
       // Check if the error is a response error from the server
+      setAuthState({ ...authState, loading: false });
       if (
         error.response &&
         error.response.data &&
@@ -115,9 +133,11 @@ export const AuthProvider = ({ children }: any) => {
 
   const logout = async () => {
     try {
+      setAuthState({ ...authState, loading: true });
       await SecureStore.deleteItemAsync("token");
-      setAuthState({ token: null, authenticated: false });
+      setAuthState({ token: null, authenticated: false, loading: false });
     } catch (error) {
+      setAuthState({ ...authState, loading: false });
       console.log(error);
     }
   };
