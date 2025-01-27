@@ -57,10 +57,18 @@ export const AuthProvider = ({ children }: any) => {
         ] = `Bearer ${response.data.token}`;
       }
 
-      return response;
-    } catch (error) {
-      console.log(error);
-      return error;
+      return response.data;
+    } catch (error: any) {
+      // Check if the error is a response error from the server
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        throw new Error(error.response.data.message); // Backend-defined error
+      } else {
+        throw new Error("Something went wrong. Please try again.");
+      }
     }
   };
 

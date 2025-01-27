@@ -11,6 +11,7 @@ import React from "react";
 import validateLogin from "../../validators/loginValidator";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
 import CloseBtn from "../Buttons/CloseBtn";
+import { useAuth } from "../../context/AppContext";
 
 interface LoginProps {
   visible: boolean;
@@ -19,17 +20,30 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ visible, close }) => {
   const { colors } = useTheme();
+  const { login } = useAuth();
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [errors, setErrors] = React.useState<{
     email?: string;
     password?: string;
   }>({});
+  const [loginError, setLoginError] = React.useState<string>("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const { isValid, errors } = validateLogin(email, password);
     if (!isValid) {
       setErrors(errors);
+      setLoginError("");
+      return;
+    }
+    try {
+      const data = await login!(email, password);
+      console.log(data);
+      // Navigate to the dashboard or show a success message
+    } catch (error: any) {
+      // Display the error message to the user
+      console.log("Error registering user:", error.message);
+      setLoginError(error.message);
     }
   };
 
@@ -93,6 +107,11 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
             <TouchableOpacity>
               <Text style={{ color: colors.primary }}>Forgot password?</Text>
             </TouchableOpacity>
+            {loginError && (
+              <Text style={{ color: colors.notification, textAlign: "center" }}>
+                {loginError}
+              </Text>
+            )}
             <PrimaryBtn
               onPress={handleLogin}
               extraStyles={{ marginTop: 40 }}
