@@ -11,6 +11,12 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Middleware to log requests
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next(); // Pass control to the next middleware
+});
+
 app.use("/api/v1/users", require("./routes/userRoutes"));
 app.use("/api/v1/accounts", require("./routes/accountRoutes"));
 app.use("/api/v1/categories", require("./routes/categoryRoutes"));
