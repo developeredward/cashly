@@ -9,8 +9,11 @@ interface AuthContextProps {
   getProfile?: () => Promise<any>;
   logout?: () => Promise<any>;
 }
+let ALL_API_URL = "http://192.168.11.111:3000/api/v1/";
+let TEMP_API_URL = "http://192.168.8.127:3000/api/v1/";
+let LOCAL_API_URL = "http://localhost:3000/api/v1/";
 
-export const API_URL = "http://192.168.8.127:3000/api/v1/";
+export const API_URL = LOCAL_API_URL;
 
 const AuthContext = createContext<AuthContextProps>({});
 
