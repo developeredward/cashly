@@ -1,3 +1,4 @@
+import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Text } from "react-native";

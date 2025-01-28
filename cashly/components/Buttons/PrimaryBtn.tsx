@@ -1,6 +1,6 @@
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Text } from "react-native";
+import React from "react";
 
 interface PrimaryBtnProps {
   onPress: () => void;

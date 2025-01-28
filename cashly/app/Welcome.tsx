@@ -14,6 +14,7 @@ import { ImageSourcePropType } from "react-native";
 import Login from "../components/auth/LoginModal";
 import Register from "../components/auth/RegisterModal";
 import PrimaryBtn from "../components/Buttons/PrimaryBtn";
+import React from "react";
 
 interface WelcomeProps {
   logo: ImageSourcePropType;
@@ -21,21 +22,48 @@ interface WelcomeProps {
 
 const Welcome = ({ logo }: WelcomeProps) => {
   const { colors } = useTheme();
-  const [modalVisible, setModalVisible] = useState({
+  const [modalVisible, setModalVisible] = useState<{
+    login: boolean;
+    register: boolean;
+  }>({
     login: false,
     register: false,
   });
-  // const [loginModalVisible, setLoginModalVisible] = useState(false);
-  // const [registerModalVisible, setRegisterModalVisible] = useState(false);
+
+  const [shouldRender, setShouldRender] = useState<{
+    login: boolean;
+    register: boolean;
+  }>({
+    login: false,
+    register: false,
+  });
 
   const openLoginModal = () => {
-    setModalVisible({ login: true, register: false });
-    console.log("Login modal opened");
+    setShouldRender({ login: true, register: false });
+    setTimeout(() => {
+      setModalVisible({ login: true, register: false });
+    }, 0); // Ensure it renders before animation starts
   };
 
   const openRegisterModal = () => {
-    setModalVisible({ login: false, register: true });
-    console.log("Register modal opened");
+    setShouldRender({ login: false, register: true });
+    setTimeout(() => {
+      setModalVisible({ login: false, register: true });
+    }, 0); // Ensure it renders before animation starts
+  };
+
+  const closeLoginModal = () => {
+    setModalVisible((prev) => ({ ...prev, login: false }));
+    setTimeout(() => {
+      setShouldRender((prev) => ({ ...prev, login: false }));
+    }, 300); // Delay matches animation duration
+  };
+
+  const closeRegisterModal = () => {
+    setModalVisible((prev) => ({ ...prev, register: false }));
+    setTimeout(() => {
+      setShouldRender((prev) => ({ ...prev, register: false }));
+    }, 300); // Delay matches animation duration
   };
 
   return (
@@ -76,16 +104,13 @@ const Welcome = ({ logo }: WelcomeProps) => {
             </Text>
           </TouchableOpacity>
         </View>
-        {modalVisible.login && (
-          <Login
-            visible={modalVisible.login}
-            close={() => setModalVisible({ login: false, register: false })}
-          />
+        {shouldRender.login && (
+          <Login visible={modalVisible.login} close={closeLoginModal} />
         )}
-        {modalVisible.register && (
+        {shouldRender.register && (
           <Register
             visible={modalVisible.register}
-            close={() => setModalVisible({ login: false, register: false })}
+            close={closeRegisterModal}
           />
         )}
       </View>

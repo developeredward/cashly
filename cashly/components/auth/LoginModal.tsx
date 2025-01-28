@@ -5,6 +5,11 @@ import {
   Modal,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
@@ -28,6 +33,9 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
     password?: string;
   }>({});
   const [loginError, setLoginError] = React.useState<string>("");
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
 
   const handleLogin = async () => {
     const { isValid, errors } = validateLogin(email, password);
@@ -56,81 +64,120 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
         close();
       }}
     >
-      <View style={styles.modalContainer}>
-        {authState?.loading ? (
-          <Loading color={colors.primary} />
-        ) : (
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: colors.background },
-            ]}
-          >
-            <CloseBtn onPress={close} />
-            <Text style={[styles.title, { color: colors.text }]}>
-              Welcome back
-            </Text>
-            <View style={styles.form}>
-              {errors.email ? (
-                <Text style={{ color: colors.notification }}>
-                  {errors.email}
-                </Text>
-              ) : (
-                <Text style={{ color: colors.text }}>Email</Text>
-              )}
-
-              <TextInput
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text.toLowerCase());
-                  setErrors({ ...errors, email: "" });
-                }}
-                style={[
-                  styles.input,
-                  { borderBottomColor: colors.primary, color: colors.text },
-                ]}
-              ></TextInput>
-              {errors.password ? (
-                <Text style={{ color: colors.notification }}>
-                  {errors.password}
-                </Text>
-              ) : (
-                <Text style={{ color: colors.text }}>Password</Text>
-              )}
-              {/* <Text style={{ color: colors.text }}>Password</Text> */}
-              <TextInput
-                placeholder="Password"
-                secureTextEntry={true}
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setErrors({ ...errors, password: "" });
-                }}
-                style={[
-                  styles.input,
-                  { borderBottomColor: colors.primary, color: colors.text },
-                ]}
-              ></TextInput>
-              <TouchableOpacity>
-                <Text style={{ color: colors.primary }}>Forgot password?</Text>
-              </TouchableOpacity>
-              {loginError && (
-                <Text
-                  style={{ color: colors.notification, textAlign: "center" }}
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View style={styles.modalContainer}>
+          {authState?.loading ? (
+            <Loading color={colors.primary} />
+          ) : (
+            <View
+              style={[
+                styles.modalContent,
+                {
+                  backgroundColor: colors.background,
+                },
+              ]}
+            >
+              <CloseBtn onPress={close} />
+              <View style={styles.before}></View>
+              <Text style={[styles.title, { color: colors.text }]}>
+                Welcome back
+              </Text>
+              <View style={styles.after}></View>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 100 : undefined}
+                style={{ flex: 1, width: "100%" }}
+              >
+                <ScrollView
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                  keyboardShouldPersistTaps="handled"
                 >
-                  {loginError}
-                </Text>
-              )}
-              <PrimaryBtn
-                onPress={handleLogin}
-                extraStyles={{ marginTop: 40 }}
-                title="Login"
-              />
+                  <View style={styles.form}>
+                    {errors.email ? (
+                      <Text style={{ color: colors.notification }}>
+                        {errors.email}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: colors.text }}>Email</Text>
+                    )}
+
+                    <TextInput
+                      placeholder="Enter your email"
+                      placeholderTextColor={colors.text + "50"}
+                      value={email}
+                      keyboardType="email-address"
+                      onChangeText={(text) => {
+                        setEmail(text.toLowerCase());
+                        setErrors({ ...errors, email: "" });
+                      }}
+                      style={[
+                        styles.input,
+                        {
+                          borderBottomColor: colors.primary,
+                          color: colors.text,
+                        },
+                      ]}
+                    ></TextInput>
+                    {errors.password ? (
+                      <Text style={{ color: colors.notification }}>
+                        {errors.password}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: colors.text }}>Password</Text>
+                    )}
+                    {/* <Text style={{ color: colors.text }}>Password</Text> */}
+                    <TextInput
+                      placeholder="Password"
+                      placeholderTextColor={colors.text + "50"}
+                      secureTextEntry={true}
+                      value={password}
+                      onChangeText={(text) => {
+                        setPassword(text);
+                        setErrors({ ...errors, password: "" });
+                      }}
+                      style={[
+                        styles.input,
+                        {
+                          borderBottomColor: colors.primary,
+                          color: colors.text,
+                        },
+                      ]}
+                    ></TextInput>
+                    <TouchableOpacity>
+                      <Text
+                        style={{ color: colors.primary, textAlign: "right" }}
+                      >
+                        Forgot password?
+                      </Text>
+                    </TouchableOpacity>
+                    {loginError && (
+                      <Text
+                        style={{
+                          color: colors.notification,
+                          textAlign: "center",
+                          top: 10,
+                        }}
+                      >
+                        {loginError}
+                      </Text>
+                    )}
+                    <PrimaryBtn
+                      onPress={handleLogin}
+                      extraStyles={{ marginTop: 40 }}
+                      title="Login"
+                    />
+                  </View>
+                </ScrollView>
+              </KeyboardAvoidingView>
             </View>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -141,7 +188,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.89)", // Adds a translucent background
-    height: "1000%",
   },
   modalContent: {
     width: "90%", // 80% of the screen width
@@ -155,7 +201,7 @@ const styles = StyleSheet.create({
     elevation: 5, // Adds shadow for Android
   },
   title: {
-    marginTop: 50,
+    paddingTop: 20,
     fontSize: 25,
     fontWeight: "bold",
     justifyContent: "center",
@@ -163,13 +209,29 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "100%",
   },
+  before: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    paddingTop: 50,
+    opacity: 0.3,
+    width: "50%",
+    alignSelf: "flex-start",
+  },
+  after: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    paddingTop: 20,
+    opacity: 0.3,
+    width: "50%",
+    alignSelf: "flex-end",
+  },
   form: {
-    marginTop: 60,
+    marginTop: 20,
     width: "100%",
+    height: "100%",
   },
   input: {
     borderBottomWidth: 1,
-    // padding: 5,
     height: 50,
     marginBottom: 30,
   },

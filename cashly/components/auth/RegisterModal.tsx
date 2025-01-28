@@ -4,9 +4,12 @@ import {
   StyleSheet,
   Modal,
   TextInput,
-  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
@@ -33,7 +36,9 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
     password?: string;
   }>({});
   const [signUpError, setSignUpError] = React.useState<string>("");
-  // const [loading, setLoading] = React.useState<boolean>(false);
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
 
   const handleSignup = async () => {
     const { isValid, errors } = validateRegister(
@@ -47,19 +52,11 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
       setSignUpError("");
       return;
     }
-
     try {
-      // setLoading(true);
       const data = await register!(fullName, email, password);
-      console.log("User registered successfully:", data);
-      // Navigate to the dashboard or show a success message
     } catch (error: any) {
-      // Display the error message to the user
-      console.log("Error registering user:", error.message);
       setSignUpError(error.message);
-      // setLoading(false);
     }
-    // setLoading(false);
   };
   return (
     <Modal
@@ -70,117 +67,160 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
         close();
       }}
     >
-      <View style={styles.modalContainer}>
-        {authState?.loading ? (
-          <Loading color={colors.primary} />
-        ) : (
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: colors.background },
-            ]}
-          >
-            <CloseBtn onPress={close} />
-            <Text style={[styles.title, { color: colors.text }]}>
-              Create an Account
-            </Text>
-            <View style={styles.form}>
-              {errors.fullName ? (
-                <Text style={{ color: colors.notification }}>
-                  {errors.fullName}
-                </Text>
-              ) : (
-                <Text style={{ color: colors.text }}>Full Name</Text>
-              )}
-              <TextInput
-                placeholder="Enter your full name"
-                value={fullName}
-                onChangeText={(text) => {
-                  setFullName(text);
-                  setErrors({ ...errors, fullName: "" });
-                }}
-                style={[
-                  styles.input,
-                  { borderBottomColor: colors.primary, color: colors.text },
-                ]}
-              ></TextInput>
-              {errors.email ? (
-                <Text style={{ color: colors.notification }}>
-                  {errors.email}
-                </Text>
-              ) : (
-                <Text style={{ color: colors.text }}>Email</Text>
-              )}
-
-              <TextInput
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text.toLowerCase());
-                  setErrors({ ...errors, email: "" });
-                }}
-                style={[
-                  styles.input,
-                  { borderBottomColor: colors.primary, color: colors.text },
-                ]}
-              ></TextInput>
-              {errors.password ? (
-                <Text style={{ color: colors.notification }}>
-                  {errors.password}
-                </Text>
-              ) : (
-                <Text style={{ color: colors.text }}>Password</Text>
-              )}
-              <TextInput
-                placeholder="Password"
-                secureTextEntry={true}
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setErrors({ ...errors, password: "" });
-                }}
-                style={[
-                  styles.input,
-                  { borderBottomColor: colors.primary, color: colors.text },
-                ]}
-              ></TextInput>
-              {errors.password ? (
-                <Text style={{ color: colors.notification }}>
-                  {errors.password}
-                </Text>
-              ) : (
-                <Text style={{ color: colors.text }}>Confirm Password</Text>
-              )}
-              <TextInput
-                placeholder="Confirm Password"
-                secureTextEntry={true}
-                value={password2}
-                onChangeText={(text) => {
-                  setPassword2(text);
-                  setErrors({ ...errors, password: "" });
-                }}
-                style={[
-                  styles.input,
-                  { borderBottomColor: colors.primary, color: colors.text },
-                ]}
-              ></TextInput>
-              {signUpError && (
-                <Text
-                  style={{ color: colors.notification, textAlign: "center" }}
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View style={styles.modalContainer}>
+          {authState?.loading ? (
+            <Loading color={colors.primary} />
+          ) : (
+            <View
+              style={[
+                styles.modalContent,
+                { backgroundColor: colors.background },
+              ]}
+            >
+              <CloseBtn onPress={close} />
+              <View style={styles.before}></View>
+              <Text style={[styles.title, { color: colors.text }]}>
+                Create an Account
+              </Text>
+              <View style={styles.after}></View>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 100 : undefined}
+                style={{ flex: 1, width: "100%" }}
+              >
+                <ScrollView
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                  keyboardShouldPersistTaps="handled"
                 >
-                  {signUpError}
-                </Text>
-              )}
+                  <View style={styles.form}>
+                    {errors.fullName ? (
+                      <Text style={{ color: colors.notification }}>
+                        {errors.fullName}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: colors.text }}>Full Name</Text>
+                    )}
+                    <TextInput
+                      placeholder="Enter your full name"
+                      placeholderTextColor={colors.text + "50"}
+                      value={fullName}
+                      onChangeText={(text) => {
+                        setFullName(text);
+                        setErrors({ ...errors, fullName: "" });
+                      }}
+                      style={[
+                        styles.input,
+                        {
+                          borderBottomColor: colors.primary,
+                          color: colors.text,
+                        },
+                      ]}
+                    ></TextInput>
+                    {errors.email ? (
+                      <Text style={{ color: colors.notification }}>
+                        {errors.email}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: colors.text }}>Email</Text>
+                    )}
 
-              <PrimaryBtn
-                onPress={handleSignup}
-                extraStyles={{ marginTop: 40 }}
-                title="Register"
-              />
+                    <TextInput
+                      placeholder="Enter your email"
+                      placeholderTextColor={colors.text + "50"}
+                      keyboardType="email-address"
+                      value={email}
+                      onChangeText={(text) => {
+                        setEmail(text.toLowerCase());
+                        setErrors({ ...errors, email: "" });
+                      }}
+                      style={[
+                        styles.input,
+                        {
+                          borderBottomColor: colors.primary,
+                          color: colors.text,
+                        },
+                      ]}
+                    ></TextInput>
+                    {errors.password ? (
+                      <Text style={{ color: colors.notification }}>
+                        {errors.password}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: colors.text }}>Password</Text>
+                    )}
+                    <TextInput
+                      placeholder="Password"
+                      placeholderTextColor={colors.text + "50"}
+                      secureTextEntry={true}
+                      value={password}
+                      onChangeText={(text) => {
+                        setPassword(text);
+                        setErrors({ ...errors, password: "" });
+                      }}
+                      style={[
+                        styles.input,
+                        {
+                          borderBottomColor: colors.primary,
+                          color: colors.text,
+                        },
+                      ]}
+                    ></TextInput>
+                    {errors.password ? (
+                      <Text style={{ color: colors.notification }}>
+                        {errors.password}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: colors.text }}>
+                        Confirm Password
+                      </Text>
+                    )}
+                    <TextInput
+                      placeholder="Confirm Password"
+                      placeholderTextColor={colors.text + "50"}
+                      secureTextEntry={true}
+                      value={password2}
+                      onChangeText={(text) => {
+                        setPassword2(text);
+                        setErrors({ ...errors, password: "" });
+                      }}
+                      style={[
+                        styles.input,
+                        {
+                          borderBottomColor: colors.primary,
+                          color: colors.text,
+                        },
+                      ]}
+                    ></TextInput>
+                    {signUpError && (
+                      <Text
+                        style={{
+                          color: colors.notification,
+                          textAlign: "center",
+                          top: -10,
+                        }}
+                      >
+                        {signUpError}
+                      </Text>
+                    )}
+
+                    <PrimaryBtn
+                      onPress={handleSignup}
+                      extraStyles={{ marginTop: 10 }}
+                      title="Register"
+                    />
+                  </View>
+                </ScrollView>
+              </KeyboardAvoidingView>
             </View>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -191,7 +231,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.89)", // Adds a translucent background
-    height: "1000%",
   },
   modalContent: {
     width: "90%", // 80% of the screen width
@@ -205,7 +244,7 @@ const styles = StyleSheet.create({
     elevation: 5, // Adds shadow for Android
   },
   title: {
-    marginTop: 50,
+    marginTop: 20,
     fontSize: 25,
     fontWeight: "bold",
     justifyContent: "center",
@@ -213,13 +252,28 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "100%",
   },
+  before: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginTop: 50,
+    opacity: 0.2,
+    width: "50%",
+    alignSelf: "flex-start",
+  },
+  after: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginTop: 20,
+    opacity: 0.2,
+    width: "50%",
+    alignSelf: "flex-end",
+  },
   form: {
-    marginTop: 60,
+    marginTop: 20,
     width: "100%",
   },
   input: {
     borderBottomWidth: 1,
-    // padding: 5,
     height: 50,
     marginBottom: 30,
   },
