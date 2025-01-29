@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-const uri = process.env.MONGO_URI || "mongodb+srv://your_connection_string";
+const uri = process.env.MONGO_URI;
 
 let client;
 let db;
@@ -8,10 +8,7 @@ let userSummaryCollection;
 
 const connectToMongo = async () => {
   if (!client) {
-    client = new MongoClient(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    client = new MongoClient(uri);
     await client.connect();
     db = client.db("cashly");
     userSummaryCollection = db.collection("userSummary");
