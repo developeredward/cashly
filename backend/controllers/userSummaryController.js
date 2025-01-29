@@ -1,4 +1,4 @@
-const UserSummary = require("../models/UserSummary");
+const UserSummary = require("../models/UserSummaryModel");
 
 // Get User Summary
 const getUserSummary = async (req, res) => {
