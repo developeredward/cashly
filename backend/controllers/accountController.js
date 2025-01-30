@@ -86,7 +86,7 @@ const updateAccount = asyncHandler(async (req, res) => {
 
 // @desc    Delete an Account
 const deleteAccount = asyncHandler(async (req, res) => {
-  const account = await Account.find({
+  const account = await Account.findOne({
     _id: req.params.id,
     user: req.user._id,
   });
