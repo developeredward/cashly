@@ -5,7 +5,11 @@ const Account = require("../models/AccountModel");
 // @route   GET /api/accounts
 // @access  Public
 const getAccounts = asyncHandler(async (req, res) => {
-  const accounts = await Account.find();
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+  const accounts = await Account.find({ user: req.user._id });
 
   res.status(200).json(accounts);
 });
@@ -14,7 +18,10 @@ const getAccounts = asyncHandler(async (req, res) => {
 // @route   GET /api/accounts/:id
 // @access  Public
 const getAccount = asyncHandler(async (req, res) => {
-  const account = await Account.findById(req.params.id);
+  const account = await Account.find({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!account) {
     res.status(404);
@@ -56,7 +63,10 @@ const addAccount = asyncHandler(async (req, res) => {
 // @route   PUT /api/accounts/:id
 // @access  Public
 const updateAccount = asyncHandler(async (req, res) => {
-  const account = await Account.findById(req.params.id);
+  const account = await Account.find({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!account) {
     res.status(404);
@@ -76,7 +86,10 @@ const updateAccount = asyncHandler(async (req, res) => {
 
 // @desc    Delete an Account
 const deleteAccount = asyncHandler(async (req, res) => {
-  const account = await Account.findById(req.params.id);
+  const account = await Account.find({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!account) {
     res.status(404);
