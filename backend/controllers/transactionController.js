@@ -43,7 +43,7 @@ const getTransaction = asyncHandler(async (req, res) => {
 const addTransaction = asyncHandler(async (req, res) => {
   const { accountId, amount, type, category, date, description } = req.body;
 
-  if (!accountId || !amount || !type || !category || !date) {
+  if (!accountId || !amount || !type || !category) {
     res.status(400);
     throw new Error("All fields are required");
   }
@@ -85,7 +85,7 @@ const deleteTransaction = asyncHandler(async (req, res) => {
   });
 
   if (transaction) {
-    await transaction.remove();
+    await transaction.deleteOne({ _id: req.params.id });
     res.json({ message: "Transaction removed" });
   } else {
     res.status(404);
