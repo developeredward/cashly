@@ -10,7 +10,7 @@ const Home = () => {
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <Text style={{ color: colors.text }}>Home</Text>
+      <Text style={{ color: colors.text }}>Home Page</Text>
       <PrimaryBtn title="Logout" onPress={logout} />
     </SafeAreaView>
   );
