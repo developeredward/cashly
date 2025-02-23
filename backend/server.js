@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// API Routes
+// All API Routes 
 app.use("/api/v1/users", require("./routes/userRoutes"));
 app.use("/api/v1/user-summary", require("./routes/userSummaryRoutes"));
 app.use("/api/v1/accounts", require("./routes/accountRoutes"));
