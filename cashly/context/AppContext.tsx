@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
@@ -17,7 +17,7 @@ let ALL_API_URL = "http://192.168.11.111:3000/api/v1/";
 let TEMP_API_URL = "http://192.168.8.127:3000/api/v1/";
 let LOCAL_API_URL = "http://localhost:3000/api/v1/";
 
-export const API_URL = TEMP_API_URL;
+export const API_URL = LOCAL_API_URL;
 
 const AuthContext = createContext<AuthContextProps>({});
 
