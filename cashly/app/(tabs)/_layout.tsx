@@ -6,6 +6,7 @@ import {
   MaterialCommunityIcons,
   Ionicons,
 } from "@expo/vector-icons";
+import { View } from "react-native";
 
 export default function TabLayout() {
   const { colors, dark } = useTheme();
@@ -51,8 +52,8 @@ export default function TabLayout() {
         name="Analytics"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "analytics" : "analytics-outline"}
+            <MaterialCommunityIcons
+              name={focused ? "chart-box" : "chart-box-outline"}
               color={color}
               size={28}
             />
@@ -63,11 +64,23 @@ export default function TabLayout() {
         name="Scan"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "scan-circle" : "scan"}
-              color={color}
-              size={28}
-            />
+            <View
+              style={{
+                backgroundColor: colors.primary + "20",
+                padding: 5,
+                borderRadius: 50,
+                height: 50,
+                width: 50,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons
+                name={focused ? "scan-circle" : "scan"}
+                color={color}
+                size={28}
+              />
+            </View>
           ),
           title: "Scan",
         }}
