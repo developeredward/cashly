@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Modal } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import LoadingSpinner from "./LoadingSpinner";
+import React from "react";
 
 const Loading = () => {
   const { colors } = useTheme();
