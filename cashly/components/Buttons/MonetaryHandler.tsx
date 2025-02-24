@@ -7,15 +7,19 @@ import {
   FontAwesome6,
 } from "@expo/vector-icons";
 
+import { useNavigation } from "expo-router";
+
 interface TransactionsHandlerProps {
   color: string;
   background: string;
 }
 
 const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
+  const navigation: any = useNavigation();
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        onPress={() => navigation.navigate("RecordTransaction")}
         style={[
           styles.btn,
           { backgroundColor: background + "90", flex: 2.5, marginRight: 10 },
