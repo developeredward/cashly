@@ -9,7 +9,7 @@ const NotificationHandler = () => {
   const { colors } = useTheme();
   return (
     <TouchableOpacity style={styles.notificationContainer}>
-      <Text style={[styles.notificationCounter, { color: colors.text }]}>
+      <Text style={[styles.notificationCounter]}>
         {notificationCount
           ? notificationCount > 9
             ? "9+"
