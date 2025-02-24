@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   title: {
-    fontSize: 24,
-    fontFamily: "Poppins-Bold",
+    fontSize: 18,
+    fontFamily: "Poppins-Regular",
   },
   balanceContainer: {
     marginTop: 10,
@@ -129,12 +129,10 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: 50,
     fontFamily: "Poppins-Bold",
-    // marginRight: 0,
   },
   icon: {
     justifyContent: "center",
     alignItems: "center",
-    // marginRight: 50,
   },
 });
 
