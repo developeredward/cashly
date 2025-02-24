@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { getBalance } from "../../constants/functions";
 
 interface BalanceProps {
   color: string;
@@ -56,7 +57,7 @@ const currencySymbol: { [key: string]: string } = {
   BGN: "лв",
   LKR: "Rs",
   BDT: "৳",
-  MAD: "د.م.",
+  MAD: "DHS",
   ETB: "Br",
   LBP: "ل.ل",
   BOB: "Bs",
@@ -81,6 +82,16 @@ const Balance = ({ color }: BalanceProps) => {
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const balance = await getBalance();
+      if (!balance) return;
+      setBalance(balance?.totalBalance ?? 0);
+      setCurrency(balance?.currency);
+    };
+    fetchBalance();
+  }, []);
 
   return (
     <View style={styles.container}>
