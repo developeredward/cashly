@@ -9,6 +9,7 @@ import Welcome from "./Welcome";
 import DarkTheme from "../theme/DarkTheme";
 import LightTheme from "../theme/LightTheme";
 import { AuthProvider, useAuth } from "../context/AppContext";
+import CustomHeader from "../components/CustomHeader";
 
 export default function RootLayoutNav() {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -63,6 +64,23 @@ const AuthContent = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
             options={{
               headerShown: false,
             }}
+          />
+          <Stack.Screen
+            name="RecordTransaction"
+            options={{
+              header: (props) => <CustomHeader title="Record A Transaction" />,
+            }}
+            // options={{
+            //   headerStyle: {
+            //     backgroundColor: isDarkTheme
+            //       ? DarkTheme.colors.background
+            //       : LightTheme.colors.background,
+            //   },
+            //   headerTintColor: isDarkTheme
+            //     ? DarkTheme.colors.primary
+            //     : LightTheme.colors.primary,
+            //   title: "Record Transaction",
+            // }}
           />
         </Stack>
       ) : (
