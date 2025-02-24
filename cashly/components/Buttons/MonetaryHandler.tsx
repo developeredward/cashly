@@ -34,7 +34,7 @@ const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
       <TouchableOpacity
         style={[styles.btn, { backgroundColor: background + "30" }]}
       >
-        <MaterialCommunityIcons name="cash-lock" size={22} color={color} />
+        <Feather name="target" size={22} color={color} />
         <Text style={[styles.text, { color: color }]}>Goals</Text>
       </TouchableOpacity>
       <TouchableOpacity
