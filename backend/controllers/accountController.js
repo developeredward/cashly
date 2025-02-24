@@ -41,7 +41,11 @@ const addAccount = asyncHandler(async (req, res) => {
     throw new Error("Please fill all fields!");
   }
 
-  const accountExists = await Account.findOne({ name: req.body.name });
+  const accountExists = await Account.findOne({
+    name: req.body.name,
+    user: req.user._id,
+    type: req.body.type,
+  });
 
   if (accountExists) {
     res.status(400);
