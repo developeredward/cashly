@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 interface AuthContextProps {
   authState?: {
     token: string | null;
+    user: { name: string; email: string } | null;
     authenticated: Boolean;
     loading: Boolean;
   };
@@ -28,10 +29,12 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: any) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
+    user: { name: string; email: string } | null;
     authenticated: Boolean;
     loading: Boolean;
   }>({
     token: null,
+    user: null,
     authenticated: false,
     loading: false,
   });
@@ -40,13 +43,24 @@ export const AuthProvider = ({ children }: any) => {
     const checkAuthenticated = async () => {
       setAuthState({ ...authState, loading: true });
       const token = await SecureStore.getItemAsync("token");
+      const user = await SecureStore.getItemAsync("user");
       console.log("stored token::" + token);
 
-      if (token) {
+      if (token && user) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        setAuthState({ token: token, authenticated: true, loading: false });
+        setAuthState({
+          token,
+          user: JSON.parse(user),
+          authenticated: true,
+          loading: false,
+        });
       } else {
-        setAuthState({ token: null, authenticated: false, loading: false });
+        setAuthState({
+          token: null,
+          user: null,
+          authenticated: false,
+          loading: false,
+        });
       }
     };
     checkAuthenticated();
@@ -62,8 +76,15 @@ export const AuthProvider = ({ children }: any) => {
 
       if (response.status === 200) {
         await SecureStore.setItemAsync("token", response.data.token);
+        const user = JSON.stringify({
+          name: response.data.name,
+          email: response.data.email,
+        });
+        await SecureStore.setItemAsync("user", user);
+
         setAuthState({
           token: response.data.token,
+          user: JSON.parse(user),
           authenticated: true,
           loading: false,
         });
@@ -135,7 +156,13 @@ export const AuthProvider = ({ children }: any) => {
     try {
       setAuthState({ ...authState, loading: true });
       await SecureStore.deleteItemAsync("token");
-      setAuthState({ token: null, authenticated: false, loading: false });
+      await SecureStore.deleteItemAsync("user");
+      setAuthState({
+        token: null,
+        user: null,
+        authenticated: false,
+        loading: false,
+      });
     } catch (error) {
       setAuthState({ ...authState, loading: false });
       console.log(error);
