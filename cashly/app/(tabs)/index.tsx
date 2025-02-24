@@ -8,7 +8,7 @@ import Loading from "../../components/Loading";
 import NotificationHandler from "../../components/Buttons/NotificationHandler";
 import Balance from "../../components/Balance/Balance";
 import Cards from "../../components/Cards/Cards";
-import TransactionsHandler from "../../components/Buttons/TransactionsHandler";
+import MonetaryHandler from "../../components/Buttons/MonetaryHandler";
 import TransactionsSheet from "../../components/Sheets/TransactionsSheet";
 const Home = () => {
   const { logout } = useAuth();
@@ -39,10 +39,7 @@ const Home = () => {
         <View>
           <Balance color={colors.text} />
           <Cards color={colors.text} background={colors.primary} />
-          <TransactionsHandler
-            color={colors.text}
-            background={colors.primary}
-          />
+          <MonetaryHandler color={colors.text} background={colors.primary} />
         </View>
       </View>
       <View>
