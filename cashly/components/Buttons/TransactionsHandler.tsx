@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
   },
   btn: {
-    padding: 10,
     flex: 1,
     borderRadius: 50,
     marginBottom: 10,
