@@ -70,17 +70,6 @@ const AuthContent = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
             options={{
               header: (props) => <CustomHeader title="Record A Transaction" />,
             }}
-            // options={{
-            //   headerStyle: {
-            //     backgroundColor: isDarkTheme
-            //       ? DarkTheme.colors.background
-            //       : LightTheme.colors.background,
-            //   },
-            //   headerTintColor: isDarkTheme
-            //     ? DarkTheme.colors.primary
-            //     : LightTheme.colors.primary,
-            //   title: "Record Transaction",
-            // }}
           />
         </Stack>
       ) : (
