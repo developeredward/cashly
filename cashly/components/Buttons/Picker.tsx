@@ -30,6 +30,7 @@ const MyPicker = ({ data, label, onSelectType }: MyPickerProps) => {
             onSelectType(itemValue);
             setIsVisible(false);
           }}
+          itemStyle={styles.pickerContent}
         >
           {data.map((item, index) => (
             <Picker.Item
@@ -73,9 +74,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   pickerContent: {
-    fontSize: 16,
-    backgroundColor: "#cccccc" + "10",
-    height: 5,
+    fontSize: 14,
+    height: 100,
   },
 });
 
