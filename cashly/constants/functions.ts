@@ -27,3 +27,34 @@ export const getBalance = async () => {
     console.log(error);
   }
 };
+
+export const getCategories = async () => {
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/categories/",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    interface Category {
+      _id: string;
+      name: string;
+      type: string;
+    }
+
+    interface ApiResponse {
+      data: Category[];
+    }
+
+    return (response.data as ApiResponse["data"]).map((category) => ({
+      id: category._id,
+      title: category.name,
+      type: category.type,
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+};
