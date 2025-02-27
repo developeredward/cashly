@@ -57,7 +57,7 @@ const currencySymbol: { [key: string]: string } = {
   BGN: "лв",
   LKR: "Rs",
   BDT: "৳",
-  MAD: "DHS",
+  MAD: "DH",
   ETB: "Br",
   LBP: "ل.ل",
   BOB: "Bs",
@@ -105,6 +105,7 @@ const Balance = ({ color }: BalanceProps) => {
           <Text style={[styles.balance, { color: color }]}>
             {isBalanceVisible
               ? currencySymbol[currency] +
+                " " +
                 (balance
                   ? balance.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,")
                   : "0.00")
