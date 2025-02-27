@@ -20,13 +20,12 @@ const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.navigate("RecordTransaction")}
-        style={[
-          styles.btn,
-          { backgroundColor: background + "90", flex: 2.5, marginRight: 10 },
-        ]}
+        style={[styles.btn, { backgroundColor: background + "90", flex: 2 }]}
       >
         <Feather name="plus" size={22} color={color} />
-        <Text style={[styles.text, { color }]}>Add Transaction</Text>
+        <Text style={[styles.text, { color, textAlign: "center" }]}>
+          Record
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -71,8 +70,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
-    padding: 5,
-    height: 80,
+    height: 55,
   },
 });
 export default MonetaryHandler;
