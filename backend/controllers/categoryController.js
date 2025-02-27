@@ -13,13 +13,7 @@ const getCategories = asyncHandler(async (req, res) => {
 
   let categories;
 
-  if (req.user.isAdmin) {
-    // Admin can access all categories
-    categories = await Category.find();
-  } else {
-    // Non-admin users can only access their own categories
-    categories = await Category.find({ user: req.user._id });
-  }
+  categories = await Category.find();
 
   res.status(200).json(categories);
 });
@@ -35,16 +29,9 @@ const getCategory = asyncHandler(async (req, res) => {
 
   let category;
 
-  if (req.user.isAdmin) {
-    // Admin can access all categories
-    category = await Category.findById(req.params.id);
-  } else {
-    // Non-admin users can only access their own categories
-    category = await Category.findOne({
-      _id: req.params.id,
-      user: req.user._id,
-    });
-  }
+  category = await Category.findOne({
+    _id: req.params.id,
+  });
 
   if (!category) {
     res.status(404);
@@ -66,7 +53,7 @@ const addCategory = asyncHandler(async (req, res) => {
 
   const categoryExists = await Category.findOne({
     name: req.body.name,
-    user: req.user._id,
+    type: req.body.type,
   });
 
   if (categoryExists) {
@@ -75,7 +62,6 @@ const addCategory = asyncHandler(async (req, res) => {
   }
 
   const category = await Category.create({
-    user: req.user._id,
     name: req.body.name,
     type: req.body.type,
     icon: req.body.icon,
@@ -91,7 +77,6 @@ const addCategory = asyncHandler(async (req, res) => {
 const updateCategory = asyncHandler(async (req, res) => {
   const category = await Category.findOne({
     _id: req.params.id,
-    user: req.user._id,
   });
 
   if (!category) {
@@ -112,7 +97,6 @@ const updateCategory = asyncHandler(async (req, res) => {
 const deleteCategory = asyncHandler(async (req, res) => {
   const category = await Category.findOne({
     _id: req.params.id,
-    user: req.user._id,
   });
 
   if (!category) {
