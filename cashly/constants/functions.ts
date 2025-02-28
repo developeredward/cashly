@@ -58,3 +58,65 @@ export const getCategories = async () => {
     console.log(error);
   }
 };
+
+export const getAccounts = async () => {
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const response = await axios.get("http://localhost:3000/api/v1/accounts/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    interface Account {
+      _id: string;
+      name: string;
+      type: string;
+      balance: number;
+    }
+
+    interface ApiResponse {
+      data: Account[];
+    }
+
+    return (response.data as ApiResponse["data"]).map((account) => ({
+      id: account._id,
+      title: account.name,
+      type: account.type,
+      balance: account.balance,
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createTransaction = async (transaction: any) => {
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/v1/transactions/",
+      transaction,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    interface Transaction {
+      _id: string;
+      description: string;
+      amount: number;
+      type: string;
+      category: string;
+      accountId: string;
+    }
+    interface ApiResponse {
+      data: Transaction[];
+    }
+    return {
+      data: response.data as ApiResponse["data"],
+      status: response.status,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
