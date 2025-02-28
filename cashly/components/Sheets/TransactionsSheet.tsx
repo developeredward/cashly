@@ -21,64 +21,6 @@ interface TransactionsSheetProps {
 
 import { logos, LogosProps } from "../../constants/Logos";
 
-const transactionsData: {
-  id: number;
-  title: string;
-  dateTime: string;
-  amount: number;
-  type: string;
-  img: keyof LogosProps;
-}[] = [
-  {
-    id: 1,
-    title: "Netflix",
-    dateTime: "Today, 12:00 PM",
-    amount: 10,
-    type: "debit",
-    img: "netflix",
-  },
-  {
-    id: 2,
-    title: "Amazon",
-    dateTime: "Today, 10:00 AM",
-    amount: 20,
-    type: "debit",
-    img: "amazon",
-  },
-  {
-    id: 3,
-    title: "Apple",
-    dateTime: "Yesterday, 12:00 PM",
-    amount: 30,
-    type: "debit",
-    img: "apple",
-  },
-  {
-    id: 4,
-    title: "Google",
-    dateTime: "Yesterday, 10:00 AM",
-    amount: 40,
-    type: "debit",
-    img: "google",
-  },
-  {
-    id: 5,
-    title: "Facebook",
-    dateTime: "Yesterday, 8:00 AM",
-    amount: 50,
-    type: "debit",
-    img: "spotify",
-  },
-  {
-    id: 6,
-    title: "Salary",
-    dateTime: "Yesterday, 8:00 AM",
-    amount: 5000,
-    type: "credit",
-    img: "salary",
-  },
-];
-
 const TransactionsSheet = ({
   color,
   primary,
