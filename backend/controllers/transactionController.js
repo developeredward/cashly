@@ -12,7 +12,9 @@ const getTransactions = asyncHandler(async (req, res) => {
 
   const transactions = await Transaction.find({
     userId: req.user._id,
-  }).populate("category", "name");
+  })
+    .populate("category", "name")
+    .populate("accountId", "type name");
   res.json(transactions);
 });
 
@@ -27,7 +29,9 @@ const getTransaction = asyncHandler(async (req, res) => {
   const transaction = await Transaction.find({
     _id: req.params.id,
     userId: req.user._id,
-  }).populate("category", "name");
+  })
+    .populate("category", "name")
+    .populate("accountId", "type name");
 
   if (transaction) {
     res.json(transaction);
@@ -41,7 +45,8 @@ const getTransaction = asyncHandler(async (req, res) => {
 // @route   POST /api/transactions
 // @access  Private
 const addTransaction = asyncHandler(async (req, res) => {
-  const { accountId, amount, type, category, date, description } = req.body;
+  const { accountId, amount, type, category, date, image, description } =
+    req.body;
 
   if (!accountId || !amount || !type || !category) {
     res.status(400);
@@ -55,6 +60,7 @@ const addTransaction = asyncHandler(async (req, res) => {
     type,
     category,
     date,
+    description,
   });
 
   if (transactionExists) {
@@ -68,6 +74,7 @@ const addTransaction = asyncHandler(async (req, res) => {
     amount,
     type,
     category,
+    image,
     date,
     description,
   });
