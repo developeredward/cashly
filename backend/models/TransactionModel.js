@@ -12,6 +12,10 @@ const TransactionSchema = new mongoose.Schema(
       ref: "Account",
       required: true,
     },
+    image: {
+      type: String,
+      default: "transaction",
+    },
 
     amount: {
       type: Number,
