@@ -15,6 +15,10 @@ export interface LogosProps {
   spotify: JSX.Element;
   wifi: JSX.Element;
   bus: JSX.Element;
+  food: JSX.Element;
+  utilities: JSX.Element;
+  shopping: JSX.Element;
+  rent: JSX.Element;
   salary: JSX.Element;
   income?: JSX.Element;
   expense?: JSX.Element;
@@ -31,6 +35,14 @@ export const logos: LogosProps = {
   salary: <MaterialCommunityIcons name="bank" size={24} color="#F4CB52" />,
   income: <Feather name="arrow-down-left" size={24} color="#31D165" />,
   expense: <Feather name="arrow-up-right" size={24} color="#F4CB52" />,
+  food: <MaterialCommunityIcons name="food" size={24} color="#F4CB52" />,
+  utilities: (
+    <MaterialCommunityIcons name="ticket-account" size={24} color="#F4CB52" />
+  ),
+  shopping: (
+    <MaterialCommunityIcons name="shopping" size={24} color="#F4CB52" />
+  ),
+  rent: <MaterialCommunityIcons name="home-city" size={24} color="#F4CB52" />,
 };
 
 export const logosPreview: LogosProps = {
@@ -44,4 +56,12 @@ export const logosPreview: LogosProps = {
   salary: <MaterialCommunityIcons name="bank" size={200} color="#F4CB52" />,
   income: <Feather name="arrow-down-left" size={200} color="#31D165" />,
   expense: <Feather name="arrow-up-right" size={200} color="#F4CB52" />,
+  food: <MaterialCommunityIcons name="food" size={200} color="#F4CB52" />,
+  utilities: (
+    <MaterialCommunityIcons name="ticket-account" size={200} color="#F4CB52" />
+  ),
+  shopping: (
+    <MaterialCommunityIcons name="shopping" size={200} color="#F4CB52" />
+  ),
+  rent: <MaterialCommunityIcons name="home-city" size={200} color="#F4CB52" />,
 };
