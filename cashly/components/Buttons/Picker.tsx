@@ -6,18 +6,32 @@ import { Picker } from "@react-native-picker/picker";
 interface MyPickerProps {
   label: string;
   onSelectType: (type: string) => void;
+  onSelectId: (id: string) => void;
+  disabled?: boolean;
   data: { id: string; title: string; type: string }[];
 }
 
-const MyPicker = ({ data, label, onSelectType }: MyPickerProps) => {
+const MyPicker = ({
+  data,
+  label,
+  onSelectType,
+  onSelectId,
+  disabled = false,
+}: MyPickerProps) => {
   const [selectedValue, setSelectedValue] = useState(label);
   const [isVisible, setIsVisible] = useState(false);
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.btn}
+        style={[
+          styles.btn,
+          {
+            backgroundColor: dark ? "#cccccc" + "10" : "#cccccc" + "50",
+          },
+        ]}
+        disabled={disabled}
         onPress={() => setIsVisible(!isVisible)}
       >
         <Text style={{ color: colors.text }}>{selectedValue}</Text>
@@ -26,20 +40,18 @@ const MyPicker = ({ data, label, onSelectType }: MyPickerProps) => {
         <Picker
           selectedValue={selectedValue}
           onValueChange={(itemValue) => {
-            setSelectedValue(itemValue);
-            onSelectType(itemValue);
+            const selectedItem = data.find((item) => item.title === itemValue);
+            if (selectedItem) {
+              setSelectedValue(selectedItem.title);
+              onSelectType(selectedItem.type);
+              onSelectId(selectedItem.id);
+            }
             setIsVisible(false);
           }}
           itemStyle={styles.pickerContent}
         >
           {data.map((item, index) => (
-            <Picker.Item
-              key={item.id}
-              style={styles.pickerContent}
-              fontFamily="Poppins"
-              label={item.title}
-              value={item.title}
-            />
+            <Picker.Item key={item.id} label={item.title} value={item.title} />
           ))}
         </Picker>
       ) : null}
@@ -69,11 +81,11 @@ const styles = StyleSheet.create({
   btn: {
     height: 50,
     justifyContent: "center",
-    backgroundColor: "#cccccc" + "10",
     borderRadius: 5,
     padding: 10,
   },
   pickerContent: {
+    top: -25,
     fontSize: 14,
     height: 100,
   },
