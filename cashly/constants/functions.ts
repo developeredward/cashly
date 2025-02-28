@@ -120,3 +120,52 @@ export const createTransaction = async (transaction: any) => {
     console.log(error);
   }
 };
+
+export const getTransactions = async () => {
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/transactions/",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Mapping the API response to a simplified format
+    interface Transaction {
+      _id: string;
+      description: string;
+      amount: number;
+      type: string;
+      category: { _id: string; name: string };
+      accountId: { _id: string; name: string; type: string };
+      image: string;
+      createdAt: string;
+    }
+
+    interface ApiResponse {
+      data: Transaction[];
+    }
+
+    return (response.data as ApiResponse["data"])
+      .map((transaction) => ({
+        id: transaction._id,
+        title: transaction.description,
+        amount: transaction.amount,
+        type: transaction.type,
+        category: transaction.category.name,
+        account: `${transaction.accountId.type} - ${transaction.accountId.name}`,
+        image: transaction.image,
+        dateTime: transaction.createdAt,
+      }))
+      .sort(
+        (a, b) =>
+          new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
+      );
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
