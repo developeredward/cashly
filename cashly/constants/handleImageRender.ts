@@ -27,6 +27,23 @@ export const handleImageRender = (type: string) => {
   if (lowerType.includes("salary")) {
     return { name: "salary", element: logosPreview.salary };
   }
+  if (lowerType.includes("food")) {
+    return { name: "food", element: logosPreview.food };
+  }
+  if (
+    lowerType.includes("utilities") ||
+    lowerType.includes("ticket") ||
+    lowerType.includes("electricity") ||
+    lowerType.includes("water")
+  ) {
+    return { name: "utilities", element: logosPreview.utilities };
+  }
+  if (lowerType.includes("shopping")) {
+    return { name: "shopping", element: logosPreview.shopping };
+  }
+  if (lowerType.includes("rent")) {
+    return { name: "rent", element: logosPreview.rent };
+  }
 
   return {
     name: lowerType,
