@@ -12,6 +12,7 @@ import { useTheme } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTransactions } from "../../constants/functions";
 import { formatDate } from "../../constants/formateDate";
+import { useRouter, useFocusEffect } from "expo-router";
 
 interface TransactionsSheetProps {
   color: string;
@@ -38,23 +39,25 @@ const TransactionsSheet = ({
     }[]
   >([]);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const response = await getTransactions();
-      setTransactions(
-        response.map((transaction) => ({
-          id: transaction.id,
-          title: transaction.title,
-          dateTime: formatDate(transaction.dateTime),
-          amount: transaction.amount,
-          type: transaction.type,
-          img: transaction.image,
-        }))
-      );
-    };
-    fetchTransactions();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchTransactionsData = async () => {
+        const data = await getTransactions();
+        setTransactions(
+          data.map((transaction) => ({
+            id: transaction.id,
+            title: transaction.title,
+            dateTime: formatDate(transaction.dateTime),
+            amount: transaction.amount,
+            type: transaction.type,
+            img: transaction.image,
+          }))
+        );
+      };
 
+      fetchTransactionsData();
+    }, [])
+  );
   return (
     <View
       style={[
