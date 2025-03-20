@@ -89,6 +89,71 @@ export const getAccounts = async () => {
   }
 };
 
+export const updateBalance = async (
+  accountId: string,
+  amount: number,
+  isIncome: boolean
+) => {
+  const token = await SecureStore.getItemAsync("token");
+
+  try {
+    // Fetch current balance
+    const { data } = await axios.get(
+      `http://localhost:3000/api/v1/accounts/${accountId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    // Extract the first account from the array
+    const account = data[0];
+    if (!account) {
+      console.error("Account not found");
+      return;
+    }
+
+    const parsedAmount = Number(amount);
+    if (isNaN(parsedAmount)) {
+      console.error("Invalid amount:", amount);
+      return;
+    }
+
+    const currentBalance = Number(account.balance);
+    const newBalance = isIncome
+      ? currentBalance + parsedAmount
+      : currentBalance - parsedAmount;
+
+    console.log("Current balance:", currentBalance);
+    console.log("Amount to update:", parsedAmount);
+    console.log("New balance:", newBalance);
+
+    const response = await axios.patch(
+      `http://localhost:3000/api/v1/accounts/${accountId}`,
+      { balance: newBalance },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    console.log("Balance updated:", response.data);
+
+    return response.status;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(
+        "Error updating balance:",
+        error.response?.data || error.message
+      );
+    } else {
+      if (error instanceof Error) {
+        console.log("Error updating balance:", error.message);
+      } else {
+        console.log("Error updating balance:", error);
+      }
+    }
+  }
+};
+
 export const createTransaction = async (transaction: any) => {
   const token = await SecureStore.getItemAsync("token");
   try {
