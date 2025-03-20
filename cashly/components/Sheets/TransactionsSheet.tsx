@@ -43,6 +43,7 @@ const TransactionsSheet = ({
     React.useCallback(() => {
       const fetchTransactionsData = async () => {
         const data = await getTransactions();
+        // console.log(data);
         setTransactions(
           data.map((transaction) => ({
             id: transaction.id,
