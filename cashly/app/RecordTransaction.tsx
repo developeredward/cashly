@@ -12,12 +12,14 @@ import {
   getCategories,
   getAccounts,
   createTransaction,
+  updateBalance,
 } from "../constants/functions";
 import MyPicker from "../components/Buttons/Picker";
 import PrimaryBtn from "../components/Buttons/PrimaryBtn";
 import { handleImageRender } from "../constants/handleImageRender";
 import { useNavigation } from "expo-router";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Balance from "../components/Balance/Balance";
 
 const RecordTransactionScreen = () => {
   const { colors, dark } = useTheme();
@@ -100,6 +102,7 @@ const RecordTransactionScreen = () => {
     }
     setLoading(true);
     const post = async () => {
+      setLoading(true);
       const data = await createTransaction({
         description: form.name,
         amount: form.amount,
@@ -108,22 +111,44 @@ const RecordTransactionScreen = () => {
         image: form.image,
         accountId: form.account,
       });
-      if (data?.status === 201) {
-        setLoading(false);
-        setForm({
-          name: "",
-          amount: 0,
-          type: "",
-          category: "",
-          image: "",
-          account: "",
-        });
-        setIcon(null);
 
-        alert("Transaction recorded successfully");
-        router.canGoBack() && router.goBack();
+      if (data?.status !== 201) {
+        setLoading(false);
+        alert("Transaction creation failed");
+        return;
       }
+      const amount = Number(form.amount);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Invalid amount");
+        return;
+      }
+
+      const updateWallet = await updateBalance(
+        form.account,
+        amount,
+        form.type === "Income" ? true : false
+      );
+
+      if (updateWallet === 200) {
+        console.log("Wallet updated successfully");
+      } else {
+        console.log("Wallet update failed");
+      }
+
+      setLoading(false);
+      setForm({
+        name: "",
+        amount: 0,
+        type: "",
+        category: "",
+        image: "",
+        account: "",
+      });
+      setIcon(null);
+      alert("Transaction recorded successfully");
+      router.canGoBack() && router.goBack();
     };
+
     post();
   };
 
