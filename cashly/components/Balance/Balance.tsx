@@ -86,6 +86,7 @@ const Balance = ({ color }: BalanceProps) => {
   useEffect(() => {
     const fetchBalance = async () => {
       const balance = await getBalance();
+      // console.log(balance);
       if (!balance) return;
       setBalance(balance?.totalBalance ?? 0);
       setCurrency(balance?.currency);
