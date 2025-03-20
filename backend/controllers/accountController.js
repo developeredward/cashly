@@ -80,7 +80,12 @@ const updateAccount = asyncHandler(async (req, res) => {
   account.name = req.body.name || account.name;
   account.type = req.body.type || account.type;
   if (req.body.balance !== undefined) {
-    account.balance = req.body.balance;
+    const newBalance = req.body.balance;
+    if (newBalance < 0) {
+      res.status(400);
+      throw new Error("Balance cannot be negative");
+    }
+    account.balance = newBalance;
   }
   account.currency = req.body.currency || account.currency;
   account.updatedAt = Date.now();
