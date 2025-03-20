@@ -79,7 +79,9 @@ const updateAccount = asyncHandler(async (req, res) => {
 
   account.name = req.body.name || account.name;
   account.type = req.body.type || account.type;
-  account.balance = req.body.balance || account.balance;
+  if (req.body.balance !== undefined) {
+    account.balance = req.body.balance;
+  }
   account.currency = req.body.currency || account.currency;
   account.updatedAt = Date.now();
 
