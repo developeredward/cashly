@@ -13,6 +13,7 @@ import {
   getAccounts,
   createTransaction,
   updateBalance,
+  getBalanceById,
 } from "../constants/functions";
 import MyPicker from "../components/Buttons/Picker";
 import PrimaryBtn from "../components/Buttons/PrimaryBtn";
@@ -89,6 +90,68 @@ const RecordTransactionScreen = () => {
     setFilteredCategories(filteredCategories);
   }, [selectedType]);
 
+  // const handleSubmit = () => {
+  //   if (
+  //     !form.name ||
+  //     !form.amount ||
+  //     !form.type ||
+  //     !form.category ||
+  //     !form.account
+  //   ) {
+  //     alert("Please fill in all fields");
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   const post = async () => {
+  //     setLoading(true);
+  //     const data = await createTransaction({
+  //       description: form.name,
+  //       amount: form.amount,
+  //       type: form.type,
+  //       category: form.category,
+  //       image: form.image,
+  //       accountId: form.account,
+  //     });
+
+  //     if (data?.status !== 201) {
+  //       setLoading(false);
+  //       alert("Transaction creation failed");
+  //       return;
+  //     }
+  //     const amount = Number(form.amount);
+  //     if (isNaN(amount) || amount <= 0) {
+  //       alert("Invalid amount");
+  //       return;
+  //     }
+
+  //     const updateWallet = await updateBalance(
+  //       form.account,
+  //       amount,
+  //       form.type === "Income" ? true : false
+  //     );
+
+  //     if (updateWallet === 200) {
+  //       console.log("Wallet updated successfully");
+  //     } else {
+  //       console.log("Wallet update failed");
+  //     }
+
+  //     setLoading(false);
+  //     setForm({
+  //       name: "",
+  //       amount: 0,
+  //       type: "",
+  //       category: "",
+  //       image: "",
+  //       account: "",
+  //     });
+  //     setIcon(null);
+  //     alert("Transaction recorded successfully");
+  //     router.canGoBack() && router.goBack();
+  //   };
+
+  //   post();
+  // };
   const handleSubmit = () => {
     if (
       !form.name ||
@@ -101,52 +164,90 @@ const RecordTransactionScreen = () => {
       return;
     }
     setLoading(true);
+
     const post = async () => {
       setLoading(true);
-      const data = await createTransaction({
-        description: form.name,
-        amount: form.amount,
-        type: form.type,
-        category: form.category,
-        image: form.image,
-        accountId: form.account,
-      });
 
-      if (data?.status !== 201) {
-        setLoading(false);
-        alert("Transaction creation failed");
-        return;
-      }
       const amount = Number(form.amount);
       if (isNaN(amount) || amount <= 0) {
         alert("Invalid amount");
+        setLoading(false);
         return;
       }
 
-      const updateWallet = await updateBalance(
-        form.account,
-        amount,
-        form.type === "Income" ? true : false
-      );
+      try {
+        // ✅ Fetch the current balance
+        const currentBalance = await getBalanceById(form.account);
 
-      if (updateWallet === 200) {
-        console.log("Wallet updated successfully");
-      } else {
-        console.log("Wallet update failed");
+        console.log("Current Balance:", currentBalance);
+        console.log("Transaction Amount:", amount);
+
+        if (currentBalance === null || isNaN(currentBalance)) {
+          alert("Failed to fetch balance. Try again.");
+          setLoading(false);
+          return;
+        }
+
+        const isIncome = form.type.toLowerCase() === "income";
+        const newBalance = isIncome
+          ? currentBalance + amount
+          : currentBalance - amount;
+
+        console.log("New Balance After Transaction:", newBalance);
+
+        // ✅ Prevent transactions if insufficient funds
+        if (!isIncome && newBalance < 0) {
+          alert("Insufficient balance for this transaction");
+          setLoading(false);
+          return;
+        }
+
+        // ✅ Proceed with transaction creation **only if balance is sufficient**
+        const data = await createTransaction({
+          description: form.name,
+          amount: form.amount,
+          type: form.type,
+          category: form.category,
+          image: form.image,
+          accountId: form.account,
+        });
+
+        if (data?.status !== 201) {
+          alert("Transaction creation failed");
+          setLoading(false);
+          return;
+        }
+
+        // ✅ Update balance
+        const updateWallet = await updateBalance(
+          form.account,
+          amount,
+          isIncome
+        );
+
+        if (updateWallet === 200) {
+          console.log("Wallet updated successfully");
+        } else {
+          console.log("Wallet update failed");
+        }
+
+        setForm({
+          name: "",
+          amount: 0,
+          type: "",
+          category: "",
+          image: "",
+          account: "",
+        });
+        setIcon(null);
+        alert("Transaction recorded successfully");
+        router.canGoBack() && router.goBack();
+      } catch (error) {
+        console.error("Error processing transaction:", error);
+        alert("Something went wrong, please try again");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
-      setForm({
-        name: "",
-        amount: 0,
-        type: "",
-        category: "",
-        image: "",
-        account: "",
-      });
-      setIcon(null);
-      alert("Transaction recorded successfully");
-      router.canGoBack() && router.goBack();
     };
 
     post();
