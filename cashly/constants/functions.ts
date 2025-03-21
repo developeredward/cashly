@@ -28,6 +28,29 @@ export const getBalance = async () => {
   }
 };
 
+export const getBalanceById = async (accountId: String) => {
+  try {
+    const token = await SecureStore.getItemAsync("token");
+
+    const { data } = await axios.get(
+      `http://localhost:3000/api/v1/accounts/${accountId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    const account = data[0];
+    if (!account) {
+      console.error("Account not found");
+      return;
+    }
+
+    return Number(account.balance);
+  } catch (error) {
+    console.error("Error fetching balance:", error);
+    return null;
+  }
+};
+
 export const getCategories = async () => {
   const token = await SecureStore.getItemAsync("token");
   try {
