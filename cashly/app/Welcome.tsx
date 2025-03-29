@@ -9,11 +9,13 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../context/AppContext";
 
 import { ImageSourcePropType } from "react-native";
 import Login from "../components/auth/LoginModal";
 import Register from "../components/auth/RegisterModal";
 import PrimaryBtn from "../components/Buttons/PrimaryBtn";
+import Loading from "../components/LoadingSpinner";
 import React from "react";
 
 interface WelcomeProps {
@@ -22,6 +24,7 @@ interface WelcomeProps {
 
 const Welcome = ({ logo }: WelcomeProps) => {
   const { colors } = useTheme();
+  const { authState } = useAuth();
   const [modalVisible, setModalVisible] = useState<{
     login: boolean;
     register: boolean;
@@ -81,29 +84,40 @@ const Welcome = ({ logo }: WelcomeProps) => {
           personalized financial goals and effortlessly monitor your progress
           along the way, all in one convenient place.{" "}
         </Text>
-        <PrimaryBtn
-          onPress={openRegisterModal}
-          extraStyles={{ marginTop: 90 }}
-          title="Get Started"
-        />
-        <View style={styles.footer}>
-          <Text style={[styles.label, { color: colors.text, opacity: 0.5 }]}>
-            Already have an account?{" "}
-          </Text>
-          <TouchableOpacity onPress={() => openLoginModal()}>
-            <Text
-              style={[
-                styles.loginText,
-                {
-                  color: colors.primary,
-                },
-              ]}
-            >
-              {" "}
-              Login
-            </Text>
-          </TouchableOpacity>
-        </View>
+
+        {authState?.authenticated ? (
+          <>
+            <PrimaryBtn
+              onPress={openRegisterModal}
+              extraStyles={{ marginTop: 90 }}
+              title="Get Started"
+            />
+            <View style={styles.footer}>
+              <Text
+                style={[styles.label, { color: colors.text, opacity: 0.5 }]}
+              >
+                Already have an account?{" "}
+              </Text>
+              <TouchableOpacity onPress={() => openLoginModal()}>
+                <Text
+                  style={[
+                    styles.loginText,
+                    {
+                      color: colors.primary,
+                    },
+                  ]}
+                >
+                  {" "}
+                  Login
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <View style={styles.footer}>
+            <Loading color={colors.primary} />
+          </View>
+        )}
         {shouldRender.login && (
           <Login visible={modalVisible.login} close={closeLoginModal} />
         )}
