@@ -159,6 +159,7 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
                       placeholderTextColor={colors.text + "50"}
                       secureTextEntry={true}
                       value={password}
+                      importantForAutofill="no"
                       onChangeText={(text) => {
                         setPassword(text);
                         setErrors({ ...errors, password: "" });
@@ -185,6 +186,7 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
                       placeholderTextColor={colors.text + "50"}
                       secureTextEntry={true}
                       value={password2}
+                      importantForAutofill="no"
                       onChangeText={(text) => {
                         setPassword2(text);
                         setErrors({ ...errors, password: "" });

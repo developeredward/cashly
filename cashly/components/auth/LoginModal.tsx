@@ -140,6 +140,7 @@ const Login: React.FC<LoginProps> = ({ visible, close }) => {
                         setPassword(text);
                         setErrors({ ...errors, password: "" });
                       }}
+                      importantForAutofill="no"
                       style={[
                         styles.input,
                         {
