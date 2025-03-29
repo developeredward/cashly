@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -45,7 +46,7 @@ const TransactionsSheet = ({
         const data = await getTransactions();
         // console.log(data);
         setTransactions(
-          data.map((transaction) => ({
+          data.slice(0, 10).map((transaction) => ({
             id: transaction.id,
             title: transaction.title,
             dateTime: formatDate(transaction.dateTime),
@@ -79,15 +80,17 @@ const TransactionsSheet = ({
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
         >
-          <Text style={[styles.subHeading, { color: primary }]}>View All</Text>
+          <Text style={[styles.subHeading, { color: primary, fontSize: 12 }]}>
+            View All
+          </Text>
           <MaterialCommunityIcons
             name="chevron-right"
-            size={24}
+            size={12}
             color={primary}
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.content}>
+      <SafeAreaView style={styles.content}>
         {transactions.length === 0 ? (
           <View
             style={{
@@ -108,60 +111,93 @@ const TransactionsSheet = ({
             </Text>
           </View>
         ) : (
-          <FlatList
-            data={transactions}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ gap: 20, height: "100%" }}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.list}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View
-                    style={{
-                      backgroundColor: dark
-                        ? "#cccccc" + "20"
-                        : "#cccccc" + "50",
-                      padding: 10,
-                      borderRadius: 10,
-                      marginRight: 10,
-                    }}
-                  >
-                    {logos[item.img as keyof LogosProps]}
+          <>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={transactions}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={{
+                gap: 20,
+                paddingBottom: 500,
+                flexGrow: 1,
+              }}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.list}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
+                      style={{
+                        backgroundColor: dark
+                          ? "#cccccc" + "20"
+                          : "#cccccc" + "50",
+                        padding: 10,
+                        borderRadius: 10,
+                        marginRight: 10,
+                      }}
+                    >
+                      {logos[item.img as keyof LogosProps]}
+                    </View>
+                    <View>
+                      <Text style={[styles.title, { color: color }]}>
+                        {item.title}
+                      </Text>
+                      <Text style={[styles.subTitle, { color: color + "60" }]}>
+                        {item.dateTime}
+                      </Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text style={[styles.title, { color: color }]}>
-                      {item.title}
+                  <View style={{ alignItems: "flex-end" }}>
+                    <Text
+                      style={[
+                        styles.title,
+                        {
+                          color: color,
+                        },
+                      ]}
+                    >
+                      {item.type === "Income" ? "+" : "-"} ${item.amount}
                     </Text>
                     <Text style={[styles.subTitle, { color: color + "60" }]}>
-                      {item.dateTime}
+                      {item.type === "Income" ? "Income" : "Expense"}
                     </Text>
                   </View>
-                </View>
-                <View style={{ alignItems: "flex-end" }}>
+                </TouchableOpacity>
+              )}
+              initialNumToRender={5}
+              maxToRenderPerBatch={10}
+              windowSize={5}
+              removeClippedSubviews={true}
+              ListFooterComponent={() => (
+                <TouchableOpacity
+                  style={{
+                    marginTop: 20,
+                    alignItems: "center",
+                    paddingVertical: 10,
+                  }}
+                  onPress={() => {
+                    console.log("Navigate to full transactions list");
+                    // Replace with actual navigation function
+                  }}
+                >
                   <Text
                     style={[
-                      styles.title,
-                      {
-                        color: color,
-                      },
+                      styles.subTitle,
+                      { color: primary, fontWeight: "bold" },
                     ]}
                   >
-                    {item.type === "Income" ? "+" : "-"} ${item.amount}
+                    View All Transactions
                   </Text>
-                  <Text style={[styles.subTitle, { color: color + "60" }]}>
-                    {item.type === "Income" ? "Income" : "Expense"}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
+                </TouchableOpacity>
+              )}
+            />
+          </>
         )}
-      </View>
+      </SafeAreaView>
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -170,22 +206,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.02,
     shadowRadius: 5,
     elevation: 1,
-    height: "100%",
     padding: 20,
     paddingHorizontal: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   content: {
     marginTop: 20,
   },
-
   headContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-
   subHeading: {
     fontSize: 16,
     fontFamily: "Poppins-SemiBold",
@@ -203,7 +236,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // paddingVertical: 10,
+    // paddingVertical: 10, // Added padding for vertical spacing
+    // marginBottom: 10, // Add margin between list items
   },
   title: {
     fontSize: 14,
