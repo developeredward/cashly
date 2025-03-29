@@ -8,4 +8,4 @@
 - [x] Express.js
 - [x] MongoDB
 - [x] Mongoose
-
+- [x] JWT Authentication
