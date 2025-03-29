@@ -44,6 +44,7 @@ const TransactionsSheet = ({
       img: string;
     }[]
   >([]);
+  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -81,6 +82,9 @@ const TransactionsSheet = ({
         <Text style={[styles.subHeading, { color: color }]}>{title}</Text>
         {type === "recent" && (
           <TouchableOpacity
+            onPress={() => {
+              router.push("/Transactions");
+            }}
             style={{ flexDirection: "row", alignItems: "center" }}
           >
             <Text style={[styles.subHeading, { color: primary, fontSize: 12 }]}>
@@ -181,8 +185,7 @@ const TransactionsSheet = ({
                     paddingVertical: 10,
                   }}
                   onPress={() => {
-                    console.log("Navigate to full transactions list");
-                    // Replace with actual navigation function
+                    router.push("/Transactions");
                   }}
                 >
                   <Text
