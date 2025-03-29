@@ -22,6 +22,10 @@ const Home = () => {
     }
   }, [authState?.authenticated]);
 
+  // useEffect(() => {
+  //   logout();
+  // }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrappedContainer}>
@@ -47,6 +51,8 @@ const Home = () => {
           color={colors.text}
           primary={colors.primary}
           background={colors.background}
+          title="Recent Transactions"
+          type="recent"
         />
       </View>
     </SafeAreaView>
