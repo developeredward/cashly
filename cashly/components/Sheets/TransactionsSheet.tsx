@@ -14,11 +14,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTransactions } from "../../constants/functions";
 import { formatDate } from "../../constants/formateDate";
 import { useRouter, useFocusEffect } from "expo-router";
+import { currencySymbol } from "../../constants/Currencies";
 
 interface TransactionsSheetProps {
   color: string;
   primary: string;
   background: string;
+  title: string;
+  type: string;
 }
 
 import { logos, LogosProps } from "../../constants/Logos";
@@ -27,6 +30,8 @@ const TransactionsSheet = ({
   color,
   primary,
   background,
+  title,
+  type,
 }: TransactionsSheetProps) => {
   const { colors, dark } = useTheme();
   const [transactions, setTransactions] = useState<
@@ -44,9 +49,8 @@ const TransactionsSheet = ({
     React.useCallback(() => {
       const fetchTransactionsData = async () => {
         const data = await getTransactions();
-        // console.log(data);
         setTransactions(
-          data.slice(0, 10).map((transaction) => ({
+          data.map((transaction) => ({
             id: transaction.id,
             title: transaction.title,
             dateTime: formatDate(transaction.dateTime),
@@ -74,21 +78,21 @@ const TransactionsSheet = ({
         ]}
       ></TouchableOpacity>
       <View style={styles.headContainer}>
-        <Text style={[styles.subHeading, { color: color }]}>
-          Recent Transactions
-        </Text>
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
-        >
-          <Text style={[styles.subHeading, { color: primary, fontSize: 12 }]}>
-            View All
-          </Text>
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={12}
-            color={primary}
-          />
-        </TouchableOpacity>
+        <Text style={[styles.subHeading, { color: color }]}>{title}</Text>
+        {type === "recent" && (
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <Text style={[styles.subHeading, { color: primary, fontSize: 12 }]}>
+              View All
+            </Text>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={12}
+              color={primary}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <SafeAreaView style={styles.content}>
         {transactions.length === 0 ? (
@@ -114,7 +118,9 @@ const TransactionsSheet = ({
           <>
             <FlatList
               showsVerticalScrollIndicator={false}
-              data={transactions}
+              data={
+                type === "recent" ? transactions.slice(0, 10) : transactions
+              }
               keyExtractor={(item) => item.id.toString()}
               contentContainerStyle={{
                 gap: 20,
@@ -154,7 +160,8 @@ const TransactionsSheet = ({
                         },
                       ]}
                     >
-                      {item.type === "Income" ? "+" : "-"} ${item.amount}
+                      {item.type === "Income" ? "+" : "-"}
+                      {item.amount} {currencySymbol["MAD"]}
                     </Text>
                     <Text style={[styles.subTitle, { color: color + "60" }]}>
                       {item.type === "Income" ? "Income" : "Expense"}
