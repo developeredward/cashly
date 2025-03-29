@@ -9,8 +9,3 @@
 - [x] MongoDB
 - [x] Mongoose
 
-## Front-End
-
-- [x] React.js
-- [x] React Native
-- [x] Expo
