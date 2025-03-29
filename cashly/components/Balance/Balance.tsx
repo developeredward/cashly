@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { getBalance } from "../../constants/functions";
 
@@ -75,24 +76,26 @@ const currencySymbol: { [key: string]: string } = {
 };
 
 const Balance = ({ color }: BalanceProps) => {
-  const [balance, setBalance] = useState<number>(1900000.03);
-  const [currency, setCurrency] = useState<string>("USD");
+  const [balance, setBalance] = useState<number>(0);
+  const [currency, setCurrency] = useState<string>("MAD");
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const balance = await getBalance();
-      // console.log(balance);
-      if (!balance) return;
-      setBalance(balance?.totalBalance ?? 0);
-      setCurrency(balance?.currency);
-    };
-    fetchBalance();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchBalance = async () => {
+        const balance = await getBalance();
+        // console.log(balance);
+        if (!balance) return;
+        setBalance(balance?.totalBalance ?? 0);
+        setCurrency(balance?.currency);
+      };
+      fetchBalance();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   balance: {
-    fontSize: 50,
+    fontSize: 40,
     fontFamily: "Poppins-Bold",
   },
   icon: {
