@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
     height: "100%", // Ensure the container stretches fully
   },
   content: {
-    justifyContent: "center",
-    top: "30%",
+    justifyContent: "flex-end",
+    flex: 1,
   },
   title: {
     fontSize: 50,
