@@ -9,11 +9,13 @@ import Welcome from "./Welcome";
 import DarkTheme from "../theme/DarkTheme";
 import LightTheme from "../theme/LightTheme";
 import { AuthProvider, useAuth } from "../context/AppContext";
-import CustomHeader from "../components/CustomHeader";
 
 export default function RootLayoutNav() {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [timeoutReached, setTimeoutReached] = useState<boolean>(false);
+  const [timeout] = useState<number>(3000);
 
   useEffect(() => {
     const currentTheme = Appearance.getColorScheme() === "dark";
