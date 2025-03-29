@@ -7,7 +7,7 @@ import {
   FontAwesome6,
 } from "@expo/vector-icons";
 
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface TransactionsHandlerProps {
   color: string;
@@ -15,11 +15,11 @@ interface TransactionsHandlerProps {
 }
 
 const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
-  const navigation: any = useNavigation();
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => navigation.navigate("RecordTransaction")}
+        onPress={() => router.push("/RecordTransaction")}
         style={[styles.btn, { backgroundColor: background + "90", flex: 2 }]}
       >
         <Feather name="plus" size={22} color={color} />
