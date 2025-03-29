@@ -66,9 +66,9 @@ const AuthContent = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
             }}
           />
           <Stack.Screen
-            name="RecordTransaction"
+            name="(Transactions)"
             options={{
-              header: (props) => <CustomHeader title="Add transaction" />,
+              headerShown: false,
             }}
           />
         </Stack>
