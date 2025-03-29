@@ -228,8 +228,6 @@ const TransactionsSheet = ({
                             dark ? "#cccccc" + "80" : "#000000"
                           }
                           style={{
-                            backgroundColor: dark ? "#161616" : "#f2f2f2",
-
                             color: color,
 
                             flex: 1,
