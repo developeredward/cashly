@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: any) => {
     token: null,
     user: null,
     authenticated: false,
-    loading: false,
+    loading: true,
   });
 
   useEffect(() => {
