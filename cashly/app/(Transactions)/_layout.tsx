@@ -1,5 +1,4 @@
 import React from "react";
-import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
 
 import CustomHeader from "../../components/CustomHeader";
@@ -10,7 +9,7 @@ export default function DashboardLayout() {
       <Stack.Screen
         name="Transactions"
         options={{
-          header: (props) => <CustomHeader title="Transactions" />,
+          header: (props) => <CustomHeader title="Transaction History" />,
         }}
       />
       <Stack.Screen
