@@ -8,6 +8,7 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -17,6 +18,8 @@ import { formatDate } from "../../constants/formateDate";
 import { useRouter, useFocusEffect } from "expo-router";
 import { currencySymbol } from "../../constants/Currencies";
 import LoadingSpinner from "../LoadingSpinner";
+
+import ticketBackground from "../../assets/ticket.png";
 
 interface TransactionsSheetProps {
   color: string;
@@ -31,7 +34,16 @@ interface FilterTransactionsProps {
   filter: string;
 }
 
-import { logos, LogosProps } from "../../constants/Logos";
+interface Transaction {
+  id: string;
+  title: string;
+  dateTime: string;
+  amount: number;
+  type: string;
+  img: string;
+}
+
+import { logos, logosPreview, LogosProps } from "../../constants/Logos";
 
 const TransactionsSheet = ({
   color,
@@ -54,6 +66,9 @@ const TransactionsSheet = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [filter, setFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const router = useRouter();
 
   useFocusEffect(
@@ -283,7 +298,13 @@ const TransactionsSheet = ({
                     flexGrow: 1,
                   }}
                   renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.list}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedTransaction(item);
+                        setModalVisible(true);
+                      }}
+                      style={styles.list}
+                    >
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
@@ -385,6 +406,55 @@ const TransactionsSheet = ({
           </>
         )}
       </SafeAreaView>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <ImageBackground
+            source={ticketBackground}
+            resizeMode="contain"
+            style={styles.ticketContainer}
+          >
+            <View
+              style={{
+                marginTop: 30,
+                backgroundColor: dark ? "#cccccc" + "20" : "#cccccc" + "50",
+                borderRadius: 20,
+                transform: [{ translateY: -20 }],
+              }}
+            >
+              {logosPreview[selectedTransaction?.img as keyof LogosProps]}
+            </View>
+            {/* Left Cutout */}
+            {/* Ticket Content */}
+            <View style={styles.modalContent}>
+              <Text style={[styles.modalTitle, { color: color }]}>
+                {selectedTransaction?.title}
+              </Text>
+              <Text style={[styles.modalText, { color: color + "80" }]}>
+                {selectedTransaction?.dateTime}
+              </Text>
+              <Text style={[styles.modalAmount, { color: color }]}>
+                {selectedTransaction?.type === "Income" ? "+" : "-"}
+                {selectedTransaction?.amount} {currencySymbol["MAD"]}
+              </Text>
+            </View>
+            {/* demarkation */}
+            <View style={[styles.cut]}></View>
+
+            {/* Close Button */}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={{ color: "#fff" }}>Close</Text>
+            </TouchableOpacity>
+          </ImageBackground>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -447,6 +517,57 @@ const styles = StyleSheet.create({
     height: 40,
 
     flex: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  ticketContainer: {
+    width: 600,
+    height: 600,
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    position: "relative",
+    // top: "10%",
+    // left: "5%",
+    // right: "5%",
+
+    overflow: "hidden",
+  },
+
+  cut: {
+    width: "35%",
+    position: "absolute",
+    top: "72%",
+    borderStyle: "dashed",
+    borderColor: "#000",
+    borderWidth: 0.5,
+  },
+  modalContent: {
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  modalText: {
+    fontSize: 14,
+    marginVertical: 5,
+  },
+  modalAmount: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "#FF5555",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
 });
 
