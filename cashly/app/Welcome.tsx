@@ -85,7 +85,7 @@ const Welcome = ({ logo }: WelcomeProps) => {
           along the way, all in one convenient place.{" "}
         </Text>
 
-        {authState?.authenticated ? (
+        {!authState?.loading ? (
           <>
             <PrimaryBtn
               onPress={openRegisterModal}
@@ -114,7 +114,7 @@ const Welcome = ({ logo }: WelcomeProps) => {
             </View>
           </>
         ) : (
-          <View style={styles.footer}>
+          <View style={[styles.footer, { marginTop: 100 }]}>
             <Loading color={colors.primary} />
           </View>
         )}
