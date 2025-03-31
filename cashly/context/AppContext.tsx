@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { BASE_URL } from "../constants/urls";
 
 interface AuthContextProps {
   authState?: {
@@ -14,11 +15,8 @@ interface AuthContextProps {
   getProfile?: () => Promise<any>;
   logout?: () => Promise<any>;
 }
-// let ALL_API_URL = "http://192.168.11.230:3000/api/v1/";
-let TEMP_API_URL = "http://192.168.8.127:3000/api/v1/";
-let LOCAL_API_URL = "http://localhost:3000/api/v1/";
 
-export const API_URL = LOCAL_API_URL;
+export const API_URL = BASE_URL;
 
 const AuthContext = createContext<AuthContextProps>({});
 
@@ -64,12 +62,32 @@ export const AuthProvider = ({ children }: any) => {
       }
     };
     checkAuthenticated();
+
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.log("Token expired or unauthorized. Logging out...");
+            await logout();
+          }
+        } else {
+          console.log("Network error. Logging out...");
+          await logout();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
       setAuthState({ ...authState, loading: true });
-      const response = await axios.post(`${API_URL}users/login`, {
+      const response = await axios.post(`${API_URL}/users/login`, {
         email,
         password,
       });
@@ -116,7 +134,7 @@ export const AuthProvider = ({ children }: any) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setAuthState({ ...authState, loading: false });
       try {
-        const response = await axios.get(`${API_URL}users/profile/:id`);
+        const response = await axios.get(`${API_URL}/users/profile/:id`);
         setAuthState({ ...authState, loading: false });
         return response.data;
       } catch (error) {
@@ -129,7 +147,7 @@ export const AuthProvider = ({ children }: any) => {
   const register = async (name: string, email: string, password: string) => {
     try {
       setAuthState({ ...authState, loading: true });
-      const response = await axios.post(`${API_URL}users/`, {
+      const response = await axios.post(`${API_URL}/users/`, {
         name,
         email,
         password,
