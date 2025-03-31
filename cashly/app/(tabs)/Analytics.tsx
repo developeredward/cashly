@@ -9,7 +9,18 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 
 const Analysis = () => {
   const { colors, dark } = useTheme();
-  const [transactions, setTransactions] = useState([]);
+  interface Transaction {
+    id: string;
+    title: string;
+    amount: number;
+    type: string;
+    category: string;
+    account: string;
+    image: string;
+    dateTime: string;
+  }
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
