@@ -6,7 +6,7 @@ import {
   MaterialCommunityIcons,
   Ionicons,
 } from "@expo/vector-icons";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 export default function TabLayout() {
   const { colors, dark } = useTheme();
@@ -39,11 +39,19 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons
-              name={focused ? "home" : "home-outline"}
-              color={color}
-              size={28}
-            />
+            <View style={styles.tabBarContainer}>
+              <MaterialCommunityIcons
+                name={focused ? "home" : "home-outline"}
+                color={color}
+                size={28}
+              />
+              <View
+                style={[
+                  styles.tabBarDot,
+                  { backgroundColor: focused ? colors.primary : "transparent" },
+                ]}
+              ></View>
+            </View>
           ),
           title: "Home",
         }}
@@ -52,11 +60,19 @@ export default function TabLayout() {
         name="Analytics"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons
-              name={focused ? "chart-box" : "chart-box-outline"}
-              color={color}
-              size={28}
-            />
+            <View style={styles.tabBarContainer}>
+              <MaterialCommunityIcons
+                name={focused ? "chart-box" : "chart-box-outline"}
+                color={color}
+                size={28}
+              />
+              <View
+                style={[
+                  styles.tabBarDot,
+                  { backgroundColor: focused ? colors.primary : "transparent" },
+                ]}
+              ></View>
+            </View>
           ),
         }}
       />
@@ -89,11 +105,19 @@ export default function TabLayout() {
         name="Card"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "card" : "card-outline"}
-              color={color}
-              size={28}
-            />
+            <View style={styles.tabBarContainer}>
+              <Ionicons
+                name={focused ? "card" : "card-outline"}
+                color={color}
+                size={28}
+              />
+              <View
+                style={[
+                  styles.tabBarDot,
+                  { backgroundColor: focused ? colors.primary : "transparent" },
+                ]}
+              ></View>
+            </View>
           ),
           title: "Cards",
         }}
@@ -102,11 +126,19 @@ export default function TabLayout() {
         name="Profile"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome
-              name={focused ? "user-circle" : "user-circle-o"}
-              color={color}
-              size={24}
-            />
+            <View style={styles.tabBarContainer}>
+              <FontAwesome
+                name={focused ? "user-circle" : "user-circle-o"}
+                color={color}
+                size={24}
+              />
+              <View
+                style={[
+                  styles.tabBarDot,
+                  { backgroundColor: focused ? colors.primary : "transparent" },
+                ]}
+              ></View>
+            </View>
           ),
           title: "Profile",
         }}
@@ -114,3 +146,19 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  tabBarDot: {
+    height: 5,
+    width: 5,
+
+    position: "absolute",
+    borderRadius: 50,
+    top: 35,
+  },
+});
