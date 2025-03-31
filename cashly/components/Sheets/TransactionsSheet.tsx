@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { getTransactions } from "../../constants/functions";
+import { getTransactions } from "../../services/api/wallet";
 import { formatDate } from "../../constants/formateDate";
 import { useRouter, useFocusEffect } from "expo-router";
 import { currencySymbol } from "../../constants/Currencies";

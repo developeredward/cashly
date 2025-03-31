@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { getBalance } from "../../constants/functions";
+import { getBalance } from "../../services/api/wallet";
 import { currencySymbol } from "../../constants/Currencies";
 
 interface BalanceProps {
