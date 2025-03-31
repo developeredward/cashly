@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { PieChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
-import { getTransactions } from "../../constants/functions";
+import { getTransactions } from "../../services/api/wallet";
 import { currencySymbol } from "../../constants/Currencies";
 import LoadingSpinner from "../../components/LoadingSpinner";
 

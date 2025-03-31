@@ -14,7 +14,7 @@ import {
   createTransaction,
   updateBalance,
   getBalanceById,
-} from "../../constants/functions";
+} from "../../services/api/wallet";
 import MyPicker from "../../components/Buttons/Picker";
 import PrimaryBtn from "../../components/Buttons/PrimaryBtn";
 import { handleImageRender } from "../../constants/handleImageRender";

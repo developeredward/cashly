@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { getAccounts } from "../../constants/functions";
+import { getAccounts } from "../../services/api/wallet";
 import { currencySymbol } from "../../constants/Currencies";
 import { useTheme } from "@react-navigation/native";
 
