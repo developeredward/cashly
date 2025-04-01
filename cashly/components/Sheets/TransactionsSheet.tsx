@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   TextInput,
   ImageBackground,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -18,8 +19,6 @@ import { formatDate } from "../../constants/formateDate";
 import { useRouter, useFocusEffect } from "expo-router";
 import { currencySymbol } from "../../constants/Currencies";
 import LoadingSpinner from "../LoadingSpinner";
-
-import ticketBackground from "../../assets/ticket.png";
 
 interface TransactionsSheetProps {
   color: string;
@@ -92,6 +91,11 @@ const TransactionsSheet = ({
       fetchTransactionsData();
     }, [])
   );
+  const generateBarcode = () => {
+    return Array.from({ length: 50 }, () =>
+      Math.random() > 0.5 ? "|" : " "
+    ).join("");
+  };
 
   const filterTransactions = ({
     transactions,
@@ -412,48 +416,89 @@ const TransactionsSheet = ({
         animationType="fade"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <ImageBackground
-            source={ticketBackground}
-            resizeMode="contain"
-            style={styles.ticketContainer}
-          >
-            <View
-              style={{
-                marginTop: 30,
-                backgroundColor: dark ? "#cccccc" + "20" : "#cccccc" + "50",
-                borderRadius: 20,
-                transform: [{ translateY: -20 }],
-              }}
-            >
-              {logosPreview[selectedTransaction?.img as keyof LogosProps]}
-            </View>
-            {/* Left Cutout */}
-            {/* Ticket Content */}
-            <View style={styles.modalContent}>
-              <Text style={[styles.modalTitle, { color: color }]}>
-                {selectedTransaction?.title}
-              </Text>
-              <Text style={[styles.modalText, { color: color + "80" }]}>
-                {selectedTransaction?.dateTime}
-              </Text>
-              <Text style={[styles.modalAmount, { color: color }]}>
-                {selectedTransaction?.type === "Income" ? "+" : "-"}
-                {selectedTransaction?.amount} {currencySymbol["MAD"]}
-              </Text>
-            </View>
-            {/* demarkation */}
-            <View style={[styles.cut]}></View>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback>
+              <View
+                style={[
+                  styles.ticketBackground,
+                  { backgroundColor: background },
+                ]}
+              >
+                {/* Left Cutout */}
+                <View
+                  style={[styles.ticketCutOut, { backgroundColor: background }]}
+                ></View>
+                {/* Right Cutout */}
+                <View
+                  style={[
+                    styles.ticketCutOutRight,
+                    { backgroundColor: background },
+                  ]}
+                ></View>
 
-            {/* Close Button */}
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={{ color: "#fff" }}>Close</Text>
-            </TouchableOpacity>
-          </ImageBackground>
-        </View>
+                {/* Ticket Header with Logo and Name */}
+                <View style={styles.ticketHeader}>
+                  <View
+                    style={[
+                      styles.logoContainer,
+                      {
+                        backgroundColor: dark
+                          ? "#cccccc" + "20"
+                          : "#cccccc" + "50",
+                      },
+                    ]}
+                  >
+                    {logosPreview[selectedTransaction?.img as keyof LogosProps]}
+                  </View>
+                  <Text style={[styles.modalTitle, { color }]}>
+                    {selectedTransaction?.title}
+                  </Text>
+                </View>
+
+                <View style={styles.ticketDetails}>
+                  <Text
+                    style={[
+                      styles.modalAmount,
+                      {
+                        color:
+                          selectedTransaction?.type === "Income"
+                            ? primary
+                            : "#FF5555",
+                      },
+                    ]}
+                  >
+                    {selectedTransaction?.type === "Income" ? "+" : "-"}
+                    {selectedTransaction?.amount} {currencySymbol["MAD"]}
+                  </Text>
+                </View>
+
+                <View style={styles.dottedLine}></View>
+
+                <View
+                  style={[
+                    styles.barcodePlaceholder,
+                    { backgroundColor: background },
+                  ]}
+                >
+                  <Text style={{ color: color + "80" }}>
+                    {generateBarcode()}
+                  </Text>
+                  <Text style={[styles.modalText, { color: color + "80" }]}>
+                    {selectedTransaction?.dateTime}
+                  </Text>
+                </View>
+
+                {/* <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={{ color: "#fff" }}>Close</Text>
+                </TouchableOpacity> */}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -524,50 +569,77 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
   },
-  ticketContainer: {
-    width: 600,
-    height: 600,
+  ticketBackground: {
+    width: 300,
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 10,
+    backgroundColor: "white",
     alignItems: "center",
     position: "relative",
-    // top: "10%",
-    // left: "5%",
-    // right: "5%",
-
-    overflow: "hidden",
   },
-
-  cut: {
-    width: "35%",
-    position: "absolute",
-    top: "72%",
-    borderStyle: "dashed",
-    borderColor: "#000",
-    borderWidth: 0.5,
-  },
-  modalContent: {
+  ticketHeader: {
     alignItems: "center",
+    marginBottom: 10,
+  },
+  logoContainer: {
+    marginRight: 10,
+    borderRadius: 20,
+    marginBottom: 30,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
+  },
+  ticketDetails: {
+    alignItems: "center",
+    marginBottom: 10,
   },
   modalText: {
     fontSize: 14,
-    marginVertical: 5,
   },
   modalAmount: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  dottedLine: {
+    width: "100%",
+    borderWidth: 1,
+    borderStyle: "dotted",
+    borderColor: "gray",
     marginVertical: 10,
   },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: "#FF5555",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  barcodePlaceholder: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: "#ddd",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 5,
+  },
+  // closeButton: {
+  //   // marginTop: 20,
+  //   backgroundColor: "#FF5555",
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 20,
+  //   borderRadius: 10,
+  // },
+  ticketCutOut: {
+    position: "absolute",
+    top: "50%",
+    left: -10,
+    width: 20,
+    height: 20,
     borderRadius: 10,
+    backgroundColor: "white",
+  },
+  ticketCutOutRight: {
+    position: "absolute",
+    top: "50%",
+    right: -10,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "white",
   },
 });
 
