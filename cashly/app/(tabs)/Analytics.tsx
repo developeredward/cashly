@@ -213,7 +213,15 @@ const Analysis = () => {
       </Text>
 
       {loading ? (
-        <LoadingSpinner color={colors.primary} />
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <LoadingSpinner color={colors.primary} />
+        </View>
       ) : (
         <>
           <View style={{ position: "relative" }}>
