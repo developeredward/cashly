@@ -208,9 +208,7 @@ const Analysis = () => {
         { backgroundColor: colors.background, flex: 1 },
       ]}
     >
-      <Text style={[styles.heading, { color: colors.text }]}>
-        Financial Analysis
-      </Text>
+      <Text style={[styles.heading, { color: colors.text }]}>Analytics</Text>
 
       {loading ? (
         <View
