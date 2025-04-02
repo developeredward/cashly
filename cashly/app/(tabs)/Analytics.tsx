@@ -343,26 +343,65 @@ const Analysis = () => {
           <View
             style={[
               {
-                marginTop: 20,
-                justifyContent: "flex-end",
+                justifyContent: "space-between",
                 alignItems: "flex-end",
                 alignSelf: "flex-end",
-                marginRight: 20,
+                flexDirection: "row",
+                width: "100%",
+
+                paddingHorizontal: 20,
+                paddingVertical: 5,
               },
             ]}
           >
-            <Text
-              style={[
-                styles.summaryText,
-                {
-                  color: categoryColors["Income"],
-                  textAlign: "right",
-                  fontWeight: "bold",
-                },
-              ]}
+            <View
+              style={{
+                backgroundColor: dark
+                  ? "rgba(24, 24, 24, 0.86)"
+                  : "rgba(255, 255, 255, 0.8)",
+                borderRadius: 30,
+                padding: 10,
+              }}
             >
-              Income: {dataPoints[4]} {currencySymbol[currency]}{" "}
-            </Text>
+              <Text
+                style={[
+                  styles.summaryText,
+                  {
+                    color: "#FF0000",
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    fontSize: 10,
+                  },
+                ]}
+              >
+                Total Expenses:{" "}
+                {dataPoints[0] + dataPoints[1] + dataPoints[2] + dataPoints[3]}{" "}
+                {currencySymbol[currency]}{" "}
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: dark
+                  ? "rgba(24, 24, 24, 0.86)"
+                  : "rgba(255, 255, 255, 0.8)",
+                borderRadius: 30,
+                padding: 10,
+              }}
+            >
+              <Text
+                style={[
+                  styles.summaryText,
+                  {
+                    color: categoryColors["Income"],
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    fontSize: 10,
+                  },
+                ]}
+              >
+                Income: {dataPoints[4]} {currencySymbol[currency]}{" "}
+              </Text>
+            </View>
           </View>
           <View>
             <View style={styles.buttonContainer}>
@@ -531,7 +570,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: "transparent",
   },
-  buttonText: { fontSize: 14, fontWeight: "bold", color: "#333" },
+  buttonText: { fontSize: 10, fontWeight: "bold", color: "#333" },
 
   summaryContainer: {
     position: "absolute",
