@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
   Ionicons,
@@ -12,12 +19,22 @@ import * as SecureStore from "expo-secure-store";
 import { AvatarListModal } from "../../components/Avatar/AvatarListModal";
 import { useAuth } from "../../context/AppContext";
 
+interface User {
+  name: string;
+  email: string;
+  currency: string;
+}
 const Profile = () => {
   const [avatarModalRef, setAvatarModalRef] = useState(false);
   const [avatar, setAvatar] = useState("");
-  const { colors } = useTheme();
+  const [user, setUser] = useState<User>({
+    name: "",
+    email: "",
+    currency: "",
+  });
+  const { colors, dark } = useTheme();
   const router = useRouter();
-  const { getProfile } = useAuth();
+  const { getProfile, logout } = useAuth();
 
   async function getAvatar() {
     const storedAvatar = await SecureStore.getItemAsync("avatar");
@@ -29,13 +46,21 @@ const Profile = () => {
     }
   }
   useEffect(() => {
-    console.log("FETch PROFILE");
-    const fetchProfile = async () => {
-      if (getProfile) {
-        await getProfile();
-      }
-    };
-    fetchProfile();
+    if (getProfile) {
+      getProfile()
+        .then((res) => {
+          setUser({
+            name: res.name,
+            email: res.email,
+            currency: res.currency,
+          });
+        })
+        .catch((err) => {
+          console.log("Error fetching profile", err);
+        });
+    } else {
+      console.log("getProfile is undefined");
+    }
   }, []);
   useEffect(() => {
     getAvatar();
@@ -103,6 +128,145 @@ const Profile = () => {
           ]}
         />
       </View>
+      <View style={styles.content}>
+        <View style={styles.detailsContainer}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontFamily: "Poppins-Regular",
+              color: colors.text,
+            }}
+          >
+            {user.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: "Poppins-Regular",
+              color: colors.text + "80",
+            }}
+          >
+            {user.email}
+          </Text>
+        </View>
+        <View style={styles.navigators}>
+          <TouchableOpacity
+            onPress={() => router.push("/settings")}
+            style={[
+              styles.navigator,
+              { backgroundColor: dark ? "#1e1e1e" : colors.card },
+            ]}
+          >
+            <Ionicons
+              name="settings-outline"
+              size={20}
+              color={colors.text}
+              style={{ marginRight: 10 }}
+            />
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Poppins-Regular",
+                color: colors.text,
+              }}
+            >
+              Account Settings
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push("/settings")}
+            style={[
+              styles.navigator,
+              { backgroundColor: dark ? "#1e1e1e" : colors.card },
+            ]}
+          >
+            <SimpleLineIcons
+              name="question"
+              size={20}
+              color={colors.text}
+              style={{ marginRight: 10 }}
+            />
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Poppins-Regular",
+                color: colors.text,
+              }}
+            >
+              FAQs
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert("Logout", "Are you sure you want to logout?", [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                {
+                  text: "OK",
+                  onPress: () => {
+                    if (logout) {
+                      logout();
+                    } else {
+                      console.error("Logout function is undefined");
+                    }
+                    router.replace("/login");
+                  },
+                },
+              ]);
+            }}
+            style={[
+              styles.navigator,
+              { backgroundColor: dark ? "#1e1e1e" : colors.card },
+            ]}
+          >
+            <Ionicons
+              name="log-out-outline"
+              size={22}
+              color={colors.notification}
+              style={{}}
+            />
+
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Poppins-Regular",
+                color: colors.text,
+                marginLeft: 10,
+              }}
+            >
+              Logout
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity style={{ marginTop: 40 }}>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Poppins-Regular",
+                color: colors.text + "80",
+                textAlign: "center",
+              }}
+            >
+              Terms & Conditions
+            </Text>
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 10,
+              fontFamily: "Poppins-Regular",
+              color: colors.primary,
+              textAlign: "center",
+              marginTop: 5,
+            }}
+          >
+            Cashly v1.0.0
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -110,6 +274,29 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    // flex: 1,
+    // marginTop: 10,
+    paddingHorizontal: 20,
+  },
+  detailsContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  navigators: {
+    // flex: 1,
+    marginTop: 20,
+  },
+  navigator: {
+    height: 60,
+    // justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 20,
+    flexDirection: "row",
   },
   headingContainer: {
     position: "absolute",
@@ -144,7 +331,7 @@ const styles = StyleSheet.create({
   avatarContainer: {
     alignItems: "center",
     justifyContent: "center",
-    top: -100,
+    marginTop: -100,
     position: "relative",
   },
   avatar: {
