@@ -507,7 +507,12 @@ const Analysis = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, alignItems: "center" },
-  heading: { fontSize: 18, fontWeight: "bold", marginBottom: 20 },
+  heading: {
+    fontSize: 26,
+
+    marginBottom: 20,
+    fontFamily: "Poppins-Bold",
+  },
   buttonContainer: {
     flexDirection: "row",
 
