@@ -5,6 +5,8 @@ import {
   StyleSheet,
   TextInput,
   Image,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -270,123 +272,139 @@ const RecordTransactionScreen = () => {
         >
           {icon}
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: colors.text }]}>Name</Text>
-          <View
-            style={[
-              styles.input,
-              { borderColor: dark ? "#cccccc" + "50" : "#cccccc" },
-            ]}
-          >
-            <TextInput
-              style={[styles.amount, { color: colors.text }]}
-              placeholder="Name of transaction"
-              value={form.name}
-              onChange={(e) => {
-                setForm({ ...form, name: e.nativeEvent.text });
-              }}
-              onEndEditing={(e) => {
-                const { name, element } = handleImageRender(e.nativeEvent.text);
-                setIcon(element || null);
-                if (name === "default") {
-                  setForm({ ...form, name: e.nativeEvent.text, image: "" });
-                  return;
-                }
-                setForm({ ...form, name: e.nativeEvent.text, image: name });
-              }}
-              placeholderTextColor={colors.text + "50"}
-            />
-          </View>
-          <Text style={[styles.label, { color: colors.text }]}>Amount</Text>
-          <View
-            style={[
-              styles.input,
-              {
-                borderColor: dark ? "#cccccc" + "50" : "#cccccc",
-              },
-            ]}
-          >
-            <Text style={[styles.currency, { color: colors.text }]}>$</Text>
-            <TextInput
-              style={[styles.amount, { color: colors.text }]}
-              placeholder="0.00"
-              onChange={(e) =>
-                setForm({ ...form, amount: parseFloat(e.nativeEvent.text) })
-              }
-              placeholderTextColor={colors.text + "50"}
-              keyboardType="numeric"
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              gap: 10,
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.label, { color: colors.text }]}>
-                Transaction type
-              </Text>
-              <MyPicker
-                label={"Select Type"}
-                data={catType}
-                onSelectType={(type: string) => {
-                  setSelectedType(type);
-
-                  if (icon === null) {
-                    const { element } = handleImageRender(type);
-                    setIcon(element || null);
-                    setForm({ ...form, type: type, image: type.toLowerCase() });
-                  } else {
-                    setForm({ ...form, type: type });
-                  }
+        <KeyboardAvoidingView behavior="padding">
+          <ScrollView style={styles.inputContainer}>
+            <Text style={[styles.label, { color: colors.text }]}>Name</Text>
+            <View
+              style={[
+                styles.input,
+                { borderColor: dark ? "#cccccc" + "50" : "#cccccc" },
+              ]}
+            >
+              <TextInput
+                style={[styles.amount, { color: colors.text }]}
+                placeholder="Name of transaction"
+                value={form.name}
+                onChange={(e) => {
+                  setForm({ ...form, name: e.nativeEvent.text });
                 }}
-                onSelectId={() => ""}
+                onEndEditing={(e) => {
+                  const { name, element } = handleImageRender(
+                    e.nativeEvent.text
+                  );
+                  setIcon(element || null);
+                  if (name === "default") {
+                    setForm({ ...form, name: e.nativeEvent.text, image: "" });
+                    return;
+                  }
+                  setForm({ ...form, name: e.nativeEvent.text, image: name });
+                }}
+                placeholderTextColor={colors.text + "50"}
               />
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.label, { color: colors.text }]}>
-                Category
-              </Text>
-
-              <MyPicker
-                label={
-                  selectedType ? "Select Category" : "Please select Type first"
+            <Text style={[styles.label, { color: colors.text }]}>Amount</Text>
+            <View
+              style={[
+                styles.input,
+                {
+                  borderColor: dark ? "#cccccc" + "50" : "#cccccc",
+                },
+              ]}
+            >
+              <Text style={[styles.currency, { color: colors.text }]}>$</Text>
+              <TextInput
+                style={[styles.amount, { color: colors.text }]}
+                placeholder="0.00"
+                onChange={(e) =>
+                  setForm({ ...form, amount: parseFloat(e.nativeEvent.text) })
                 }
-                data={filteredCategories}
-                onSelectType={() => ""}
-                onSelectId={(id: string) => setForm({ ...form, category: id })}
-                disabled={!selectedType}
+                placeholderTextColor={colors.text + "50"}
+                keyboardType="numeric"
               />
             </View>
-          </View>
-          <View>
-            <Text style={[styles.label, { color: colors.text }]}>Account</Text>
-            <MyPicker
-              label="Choose Transaction Account"
-              data={allAccounts}
-              onSelectType={(type: string) => {
-                setForm({ ...form, account: type });
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: 10,
               }}
-              onSelectId={(type: string) => setForm({ ...form, account: type })}
-            />
-          </View>
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.label, { color: colors.text }]}>
+                  Transaction type
+                </Text>
+                <MyPicker
+                  label={"Select Type"}
+                  data={catType}
+                  onSelectType={(type: string) => {
+                    setSelectedType(type);
 
-          <View
-            style={{
-              marginTop: 20,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {loading ? (
-              <LoadingSpinner color={colors.primary} />
-            ) : (
-              <PrimaryBtn title="Record Transaction" onPress={handleSubmit} />
-            )}
-          </View>
-        </View>
+                    if (icon === null) {
+                      const { element } = handleImageRender(type);
+                      setIcon(element || null);
+                      setForm({
+                        ...form,
+                        type: type,
+                        image: type.toLowerCase(),
+                      });
+                    } else {
+                      setForm({ ...form, type: type });
+                    }
+                  }}
+                  onSelectId={() => ""}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.label, { color: colors.text }]}>
+                  Category
+                </Text>
+
+                <MyPicker
+                  label={
+                    selectedType
+                      ? "Select Category"
+                      : "Please select Type first"
+                  }
+                  data={filteredCategories}
+                  onSelectType={() => ""}
+                  onSelectId={(id: string) =>
+                    setForm({ ...form, category: id })
+                  }
+                  disabled={!selectedType}
+                />
+              </View>
+            </View>
+            <View>
+              <Text style={[styles.label, { color: colors.text }]}>
+                Account
+              </Text>
+              <MyPicker
+                label="Choose Transaction Account"
+                data={allAccounts}
+                onSelectType={(type: string) => {
+                  setForm({ ...form, account: type });
+                }}
+                onSelectId={(type: string) =>
+                  setForm({ ...form, account: type })
+                }
+              />
+            </View>
+
+            <View
+              style={{
+                marginTop: 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {loading ? (
+                <LoadingSpinner color={colors.primary} />
+              ) : (
+                <PrimaryBtn title="Record Transaction" onPress={handleSubmit} />
+              )}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </View>
   );
