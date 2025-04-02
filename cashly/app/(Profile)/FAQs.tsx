@@ -29,7 +29,7 @@ const faqs = [
 ];
 
 const FAQs = () => {
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
   const router = useRouter();
   const [expanded, setExpanded] = useState<number | null>(null);
 
@@ -56,11 +56,16 @@ const FAQs = () => {
         </Text>
         <View style={[styles.navBtn]}></View>
       </View>
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}>
         {faqs.map((faq, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.faqContainer, { backgroundColor: colors.card }]}
+            style={[
+              styles.faqContainer,
+              {
+                backgroundColor: dark ? "#1e1e1e" : colors.card,
+              },
+            ]}
             onPress={() => setExpanded(expanded === index ? null : index)}
           >
             <Text style={[styles.question, { color: colors.text }]}>
