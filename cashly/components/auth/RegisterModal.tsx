@@ -110,6 +110,7 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
                       placeholder="Enter your full name"
                       placeholderTextColor={colors.text + "50"}
                       value={fullName}
+                      importantForAutofill="no"
                       onChangeText={(text) => {
                         setFullName(text);
                         setErrors({ ...errors, fullName: "" });
@@ -134,6 +135,7 @@ const Register: React.FC<RegisterProps> = ({ visible, close }) => {
                       placeholder="Enter your email"
                       placeholderTextColor={colors.text + "50"}
                       keyboardType="email-address"
+                      importantForAutofill="no"
                       value={email}
                       onChangeText={(text) => {
                         setEmail(text.toLowerCase());
