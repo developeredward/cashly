@@ -13,6 +13,7 @@ import {
   SimpleLineIcons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { useFocusEffect } from "expo-router";
 import { useRouter } from "expo-router";
 import { AvatarImageMapping } from "../../constants/avatars";
 import * as SecureStore from "expo-secure-store";
@@ -46,28 +47,44 @@ const Profile = () => {
       setAvatar(mappedAvatar);
     }
   }
-  useEffect(() => {
-    if (getProfile) {
-      getProfile()
-        .then((res) => {
-          setUser({
-            name: res.name,
-            email: res.email,
-            currency: res.currency,
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchAvatar = async () => {
+        const storedAvatar = await SecureStore.getItemAsync("avatar");
+        if (storedAvatar) {
+          const avatarName = JSON.parse(storedAvatar)
+            .name as keyof typeof AvatarImageMapping;
+          const mappedAvatar = AvatarImageMapping[avatarName];
+          setAvatar(mappedAvatar);
+        }
+      };
+      fetchAvatar();
+    }, [])
+  );
+  useFocusEffect(
+    React.useCallback(() => {
+      if (getProfile) {
+        getProfile()
+          .then((res) => {
+            setUser({
+              name: res.name,
+              email: res.email,
+              currency: res.currency,
+            });
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log("Error fetching profile", err);
+            setLoading(false);
           });
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log("Error fetching profile", err);
-          setLoading(false);
-        });
-    } else {
-      console.log("getProfile is undefined");
-    }
-  }, []);
-  useEffect(() => {
-    getAvatar();
-  }, [avatar]);
+      } else {
+        console.log("getProfile is undefined");
+      }
+    }, [])
+  );
+  // useEffect(() => {
+  //   getAvatar();
+  // }, [avatar]);
   return (
     <View style={styles.container}>
       <View style={[styles.banner, { backgroundColor: colors.primary }]}></View>
