@@ -24,7 +24,7 @@ import {
 const CATEGORY_MAP = {
   Utilities: ["Utilities", "Insurance"],
   Subscription: ["Entertainment", "Education"],
-  Payments: ["Rent", "Loans", "Tax"],
+  Payments: ["Rent/Mortgage", "Loans", "Tax"],
   "Other Expenses": [
     "Groceries",
     "Transportation",
