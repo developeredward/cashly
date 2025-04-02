@@ -18,7 +18,7 @@ import { AvatarImageMapping } from "../../constants/avatars";
 import * as SecureStore from "expo-secure-store";
 import { AvatarListModal } from "../../components/Avatar/AvatarListModal";
 import { useAuth } from "../../context/AppContext";
-
+import LoadingSpinner from "../../components/LoadingSpinner";
 interface User {
   name: string;
   email: string;
@@ -26,6 +26,7 @@ interface User {
 }
 const Profile = () => {
   const [avatarModalRef, setAvatarModalRef] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [avatar, setAvatar] = useState("");
   const [user, setUser] = useState<User>({
     name: "",
@@ -54,9 +55,11 @@ const Profile = () => {
             email: res.email,
             currency: res.currency,
           });
+          setLoading(false);
         })
         .catch((err) => {
           console.log("Error fetching profile", err);
+          setLoading(false);
         });
     } else {
       console.log("getProfile is undefined");
@@ -129,29 +132,36 @@ const Profile = () => {
         />
       </View>
       <View style={styles.content}>
-        <View style={styles.detailsContainer}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontFamily: "Poppins-Regular",
-              color: colors.text,
-            }}
-          >
-            {user.name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontFamily: "Poppins-Regular",
-              color: colors.text + "80",
-            }}
-          >
-            {user.email}
-          </Text>
-        </View>
+        {loading ? (
+          <View style={styles.detailsContainer}>
+            <LoadingSpinner color={colors.primary} />
+          </View>
+        ) : (
+          <View style={styles.detailsContainer}>
+            <Text
+              style={{
+                fontSize: 24,
+                fontFamily: "Poppins-Regular",
+                color: colors.text,
+              }}
+            >
+              {user.name}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Poppins-Regular",
+                color: colors.text + "80",
+              }}
+            >
+              {user.email}
+            </Text>
+          </View>
+        )}
+
         <View style={styles.navigators}>
           <TouchableOpacity
-            onPress={() => router.push("/settings")}
+            onPress={() => router.push("/EditProfile")}
             style={[
               styles.navigator,
               { backgroundColor: dark ? "#1e1e1e" : colors.card },
@@ -174,7 +184,7 @@ const Profile = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.push("/settings")}
+            onPress={() => router.push("/FAQs")}
             style={[
               styles.navigator,
               { backgroundColor: dark ? "#1e1e1e" : colors.card },
@@ -311,7 +321,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 250,
     backgroundColor: "#f0f0f0",
-    borderRadius: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     marginBottom: 20,
   },
   heading: {
