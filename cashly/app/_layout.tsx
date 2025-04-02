@@ -73,6 +73,12 @@ const AuthContent = ({ isDarkTheme }: { isDarkTheme: boolean }) => {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="(Profile)"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       ) : (
         <Welcome
