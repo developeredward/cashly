@@ -20,11 +20,20 @@ const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => router.push("/RecordTransaction")}
-        style={[styles.btn, { backgroundColor: background + "90", flex: 2 }]}
+        style={[
+          styles.btn,
+          {
+            backgroundColor: background + "90",
+            flex: 4,
+            flexDirection: "row",
+            gap: 5,
+          },
+        ]}
       >
-        <Feather name="plus" size={22} color={color} />
+        <Feather name="plus" size={24} color={color} />
+
         <Text style={[styles.text, { color, textAlign: "center" }]}>
-          Record
+          Add Transaction
         </Text>
       </TouchableOpacity>
 
@@ -39,12 +48,6 @@ const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
       >
         <Feather name="target" size={22} color={color} />
         <Text style={[styles.text, { color: color }]}>Goals</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.btn, { backgroundColor: background + "20" }]}
-      >
-        <Feather name="dollar-sign" size={22} color={color} />
-        <Text style={[styles.text, { color: color }]}>Accounts</Text>
       </TouchableOpacity>
     </View>
   );
