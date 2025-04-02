@@ -4,13 +4,14 @@ const Budget = require("../models/BudgetModel");
 
 // @desc    Get all Budgets
 // @route   GET /api/budgets
-// @access  Public
+// @access  Private (based on the token)
 const getBudgets = asyncHandler(async (req, res) => {
   if (!req.user) {
     res.status(401);
     throw new Error("Not authorized");
   }
 
+  // Fetch budgets based on the logged-in user (using req.user._id from token)
   const budgets = await Budget.find({ user: req.user._id });
 
   res.status(200).json(budgets);
@@ -18,14 +19,15 @@ const getBudgets = asyncHandler(async (req, res) => {
 
 // @desc    Get single Budget
 // @route   GET /api/budgets/:id
-// @access  Public
+// @access  Private (based on the token)
 const getBudget = asyncHandler(async (req, res) => {
   if (!req.user) {
     res.status(401);
     throw new Error("Not authorized");
   }
 
-  const budget = await Budget.find({ _id: req.params.id, user: req.user._id });
+  // Fetch a specific budget by id (based on token authorization)
+  const budget = await Budget.findOne({ _id: req.params.id, user: req.user._id });
 
   if (!budget) {
     res.status(404);
@@ -37,8 +39,7 @@ const getBudget = asyncHandler(async (req, res) => {
 
 // @desc    Create a Budget
 // @route   POST /api/budgets
-// @access  Public
-
+// @access  Private (based on the token)
 const addBudget = asyncHandler(async (req, res) => {
   if (
     !req.body.amount ||
@@ -50,6 +51,7 @@ const addBudget = asyncHandler(async (req, res) => {
     throw new Error("Please fill all fields!");
   }
 
+  // Ensure the logged-in user can create a budget for their own account
   let budgetExists = await Budget.findOne({
     user: req.user._id,
     category: req.body.category,
@@ -61,6 +63,7 @@ const addBudget = asyncHandler(async (req, res) => {
     throw new Error("Budget already exists for this category and period");
   }
 
+  // Create a new budget for the logged-in user
   const budget = await Budget.create({
     user: req.user._id,
     category: req.body.category,
@@ -75,8 +78,7 @@ const addBudget = asyncHandler(async (req, res) => {
 
 // @desc    Update a Budget
 // @route   PUT /api/budgets/:id
-// @access  Public
-
+// @access  Private (based on the token)
 const updateBudget = asyncHandler(async (req, res) => {
   const budget = await Budget.findOne({
     _id: req.params.id,
@@ -100,8 +102,7 @@ const updateBudget = asyncHandler(async (req, res) => {
 
 // @desc    Delete a Budget
 // @route   DELETE /api/budgets/:id
-// @access  Public
-
+// @access  Private (based on the token)
 const deleteBudget = asyncHandler(async (req, res) => {
   const budget = await Budget.findOne({
     _id: req.params.id,
