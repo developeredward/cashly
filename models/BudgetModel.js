@@ -7,14 +7,17 @@ const BudgetSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
+    name: { // Add name to the budget
+      type: String,
+      required: [true, "Budget name is required"],
     },
     amount: {
       type: Number,
       required: [true, "Amount is required"],
+    },
+    spentAmount: { // Track the amount spent within the budget
+      type: Number,
+      default: 0,
     },
     period: {
       type: String,
