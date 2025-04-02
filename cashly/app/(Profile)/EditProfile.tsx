@@ -16,6 +16,7 @@ import {
   Ionicons,
   SimpleLineIcons,
   MaterialCommunityIcons,
+  MaterialIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { AvatarImageMapping } from "../../constants/avatars";
@@ -237,7 +238,7 @@ const EditProfile = () => {
                 Name
               </Text>
               <TextInput
-                placeholder={user.name}
+                placeholder={loading ? "---" : user.name}
                 placeholderTextColor={colors.text + "80"}
                 onChangeText={(text) => {
                   setUser({ ...user, name: text });
@@ -263,19 +264,38 @@ const EditProfile = () => {
               >
                 Email Address
               </Text>
-              <TextInput
-                placeholder={user.email}
-                placeholderTextColor={colors.text + "80"}
-                style={[
-                  styles.inputField,
-                  {
-                    backgroundColor: dark ? "#1e1e1e" : colors.card,
-                    color: colors.text,
-                  },
-                ]}
-                editable={false}
-                value={user.email}
-              />
+              <View>
+                <TextInput
+                  placeholder={loading ? "---" : user.email}
+                  placeholderTextColor={colors.text + "80"}
+                  style={[
+                    styles.inputField,
+                    {
+                      backgroundColor: dark ? "#1e1e1e" : colors.card,
+                      color: colors.text,
+                    },
+                  ]}
+                  editable={false}
+                  value={user.email}
+                />
+                <View
+                  style={{
+                    position: "absolute",
+                    right: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  {!loading && (
+                    <MaterialIcons
+                      name="verified"
+                      size={20}
+                      color={colors.primary}
+                    />
+                  )}
+                </View>
+              </View>
             </View>
             <View style={styles.inputContent}>
               <Text
@@ -290,7 +310,7 @@ const EditProfile = () => {
                 Currency
               </Text>
               <TextInput
-                placeholder={user.currency}
+                placeholder={loading ? "---" : user.currency}
                 placeholderTextColor={colors.text + "80"}
                 onChangeText={(text) => {
                   setUser({ ...user, currency: text });
