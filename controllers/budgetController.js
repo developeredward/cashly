@@ -2,7 +2,7 @@ const Budget = require("../models/BudgetModel");
 const mongoose = require("mongoose");
 
 // Create a new budget
-exports.createBudget = async (req, res) => {
+export const createBudget = async (req, res) => {
   const { user, name, amount, period, startDate, endDate } = req.body;
 
   try {
@@ -28,7 +28,7 @@ exports.createBudget = async (req, res) => {
 };
 
 // Get all budgets for a user
-exports.getBudgets = async (req, res) => {
+export const getBudgets = async (req, res) => {
   try {
     const budgets = await Budget.find({ user: req.user._id }); // Assuming user is authenticated and user id is passed
     res.status(200).json({ budgets });
@@ -39,7 +39,7 @@ exports.getBudgets = async (req, res) => {
 };
 
 // Update a budget
-exports.updateBudget = async (req, res) => {
+export const updateBudget = async (req, res) => {
   const { budgetId } = req.params;
   const { name, amount, spentAmount, period, startDate, endDate } = req.body;
 
@@ -65,7 +65,7 @@ exports.updateBudget = async (req, res) => {
 };
 
 // Delete a budget
-exports.deleteBudget = async (req, res) => {
+export const deleteBudget = async (req, res) => {
   const { budgetId } = req.params;
 
   try {
@@ -83,7 +83,7 @@ exports.deleteBudget = async (req, res) => {
 };
 
 // Get a specific budget by ID
-exports.getBudgetById = async (req, res) => {
+export const getBudgetById = async (req, res) => {
   const { budgetId } = req.params;
 
   try {
