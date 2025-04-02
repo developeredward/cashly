@@ -134,8 +134,13 @@ export const AuthProvider = ({ children }: any) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setAuthState({ ...authState, loading: false });
       try {
-        const response = await axios.get(`${API_URL}/users/profile/`);
+        const response = await axios.get(`${API_URL}/users/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setAuthState({ ...authState, loading: false });
+
         return response.data;
       } catch (error) {
         console.log(error);
