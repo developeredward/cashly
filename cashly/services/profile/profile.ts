@@ -5,7 +5,7 @@ import { BASE_URL } from "../../constants/urls";
 export const getProfile = async () => {
   const token = await SecureStore.getItemAsync("token");
   try {
-    const response = await axios.get(`${BASE_URL}/profile/`, {
+    const response = await axios.get(`${BASE_URL}/users/profile/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
