@@ -1,11 +1,9 @@
 const asyncHandler = require("express-async-handler");
-
 const Budget = require("../models/BudgetModel");
-
 const mongoose = require("mongoose");
 
 // Create a new budget
-export const createBudget = async (req, res) => {
+const createBudget = async (req, res) => {
   const { user, name, amount, period, startDate, endDate } = req.body;
 
   try {
@@ -31,7 +29,7 @@ export const createBudget = async (req, res) => {
 };
 
 // Get all budgets for a user
-export const getBudgets = async (req, res) => {
+const getBudgets = async (req, res) => {
   try {
     const budgets = await Budget.find({ user: req.user._id }); // Assuming user is authenticated and user id is passed
     res.status(200).json({ budgets });
@@ -42,7 +40,7 @@ export const getBudgets = async (req, res) => {
 };
 
 // Update a budget
-export const updateBudget = async (req, res) => {
+const updateBudget = async (req, res) => {
   const { budgetId } = req.params;
   const { name, amount, spentAmount, period, startDate, endDate } = req.body;
 
@@ -68,7 +66,7 @@ export const updateBudget = async (req, res) => {
 };
 
 // Delete a budget
-export const deleteBudget = async (req, res) => {
+const deleteBudget = async (req, res) => {
   const { budgetId } = req.params;
 
   try {
@@ -86,7 +84,7 @@ export const deleteBudget = async (req, res) => {
 };
 
 // Get a specific budget by ID
-export const getBudgetById = async (req, res) => {
+const getBudgetById = async (req, res) => {
   const { budgetId } = req.params;
 
   try {
@@ -101,4 +99,12 @@ export const getBudgetById = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Error fetching budget", error: err.message });
   }
+};
+
+module.exports = {
+  createBudget,
+  getBudgets,
+  updateBudget,
+  deleteBudget,
+  getBudgetById,
 };
