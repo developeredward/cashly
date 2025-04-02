@@ -16,6 +16,7 @@ export default function DashboardLayout() {
         name="RecordTransaction"
         options={{
           header: (props) => <CustomHeader title="Add transaction" />,
+          headerShown: false,
         }}
       />
     </Stack>

@@ -16,6 +16,8 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useTheme } from "@react-navigation/native";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function ReceiptScanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -25,6 +27,7 @@ export default function ReceiptScanner() {
   const cameraRef = useRef<CameraView | null>(null);
   const scanAnimation = useRef(new Animated.Value(0)).current;
   const { colors, dark } = useTheme();
+  const router = useRouter();
 
   if (!permission) {
     return <View />;
@@ -121,29 +124,44 @@ export default function ReceiptScanner() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={[styles.heading, { color: colors.text }]}>
-        Receipt Scanner
-      </Text>
-      <Text
-        style={{
-          color: colors.text + "80",
-          fontSize: 12,
-          marginBottom: 20,
-        }}
-      >
-        Align the receipt within the frame and tap "Scan"
-      </Text>
-
+    <View style={styles.container}>
       <View
+        style={[styles.banner, { backgroundColor: colors.primary, zIndex: 1 }]}
+      ></View>
+      <View style={[styles.headingContainer, { zIndex: 1 }]}>
+        <TouchableOpacity
+          style={[styles.navBtn, { backgroundColor: colors.background }]}
+          onPress={() => router.canGoBack() && router.back()}
+        >
+          <Ionicons name="chevron-back-sharp" size={18} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[styles.heading, { color: colors.text, fontSize: 20 }]}>
+          Scan Reciept
+        </Text>
+        <View
+          style={[styles.navBtn, { backgroundColor: "transparent" }]}
+        ></View>
+      </View>
+
+      <ScrollView
         style={{
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-
           width: "100%",
         }}
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
+        <Text
+          style={{
+            color: colors.text + "80",
+            fontSize: 12,
+            marginBottom: 20,
+          }}
+        >
+          Align the receipt within the frame and tap "Scan"
+        </Text>
         <View style={[styles.cameraWrapper]}>
           <View style={styles.cameraBorder}>
             <CameraView ref={cameraRef} style={styles.camera} facing="back">
@@ -208,17 +226,17 @@ export default function ReceiptScanner() {
             <Text>{extractedText}</Text>
           </ScrollView>
         )}
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, alignItems: "center" },
+  container: { flex: 1, alignItems: "center", justifyContent: "center" },
   heading: {
     fontSize: 26,
+    fontWeight: "bold",
 
-    marginBottom: 20,
     fontFamily: "Poppins-Bold",
   },
   cameraWrapper: {
@@ -258,4 +276,30 @@ const styles = StyleSheet.create({
   buttonText: { color: "#fff", fontSize: 16 },
   preview: { width: "100%", height: 200, marginTop: 10 },
   textContainer: { padding: 10, backgroundColor: "#fff", marginTop: 10 },
+  headingContainer: {
+    position: "absolute",
+    top: 60,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  banner: {
+    width: "100%",
+    height: 250,
+    backgroundColor: "#f0f0f0",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    marginBottom: 20,
+  },
+
+  navBtn: {
+    height: 50,
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 50,
+  },
 });
