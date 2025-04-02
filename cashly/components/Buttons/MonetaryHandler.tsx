@@ -38,12 +38,14 @@ const MonetaryHandler = ({ color, background }: TransactionsHandlerProps) => {
       </TouchableOpacity>
 
       <TouchableOpacity
+        onPress={() => router.push("/Budget")}
         style={[styles.btn, { backgroundColor: background + "50" }]}
       >
         <FontAwesome6 name="sack-dollar" size={22} color={color} />
         <Text style={[styles.text, { color: color }]}>Budgets</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={() => router.push("/Goal")}
         style={[styles.btn, { backgroundColor: background + "30" }]}
       >
         <Feather name="target" size={22} color={color} />
