@@ -13,19 +13,10 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get single User
-// @route   GET /api/Users/:id
+// @route   GET /api/Users/profile
 // @access  Private
 const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  if (
-    req.user._id.toString() !== req.params.id.toString() &&
-    !req.user.isAdmin
-  ) {
-    res.status(403);
-    throw new Error("You are not authorized to access this user's information");
-  }
-
+  const user = await User.findById(req.user._id);
   res.status(200).json(user);
 });
 
@@ -91,29 +82,24 @@ const addUser = asyncHandler(async (req, res) => {
 });
 
 // @desc    Update a User
-// @route   PUT /api/Users/:id
+// @route   PUT /api/Users/
 // @access  Private
 const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.user._id); // Get user from token
 
   if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
 
-  if (req.user._id.toString() !== user._id.toString() && !req.user.isAdmin) {
-    res.status(403);
-    throw new Error("You are not authorized to update this user");
-  }
-
   user.name = req.body.name || user.name;
   user.email = req.body.email || user.email;
   user.currency = req.body.currency || user.currency;
-  user.password = req.body.password || user.password;
-  user.updatedAt = Date.now();
+  if (req.body.password) {
+    user.password = await bcrypt.hash(req.body.password, 10);
+  }
 
   const updatedUser = await user.save();
-
   res.status(200).json(updatedUser);
 });
 

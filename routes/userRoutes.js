@@ -11,7 +11,7 @@ const {
 const { protect, admin } = require("../middleware/authMiddleware");
 
 router.route("/").post(addUser).get(protect, admin, getUsers);
-router.route("/profile/:id").get(protect, getUser).put(protect, updateUser);
+router.route("/profile/").get(protect, getUser).put(protect, updateUser);
 router.post("/login", authUser);
 router
   .route("/:id")
