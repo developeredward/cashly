@@ -382,7 +382,7 @@ const EditProfile = () => {
                       style: "destructive",
                       onPress: async () => {
                         await deleteProfile().then((res) => {
-                          if (res?.status === 204) {
+                          if (res?.status === 200) {
                             console.log("Account deleted successfully");
                             logout?.();
                           } else {
