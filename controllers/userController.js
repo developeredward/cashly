@@ -120,7 +120,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     throw new Error("You are not authorized to delete this user");
   }
 
-  await User.deleteOne();
+  await user.deleteOne(); 
 
   res.status(200).json({ message: "User removed" });
 });
