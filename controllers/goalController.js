@@ -72,16 +72,18 @@ const getGoal = asynvHandler(async (req, res) => {
 // @access  Private
 
 const updateGoal = asynvHandler(async (req, res) => {
-  const { name, targetAmount, deadline, priority } = req.body;
+  const { name, targetAmount, currentAmount, completed, deadline, priority } = req.body;
 
   const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
     goal.name = name || goal.name;
     goal.targetAmount = targetAmount || goal.targetAmount;
+    goal.currentAmount = currentAmount || goal.currentAmount;
+    
     goal.deadline = deadline || goal.deadline;
     goal.priority = priority || goal.priority;
-    goal.completed = req.body.completed || goal.completed;
+    goal.completed = completed || goal.completed;
     goal.updatedAt = Date.now();
 
     const updatedGoal = await goal.save();
