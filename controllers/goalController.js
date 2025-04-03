@@ -100,7 +100,7 @@ const deleteGoal = asynvHandler(async (req, res) => {
   const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
-    await goal.remove();
+    await goal.findByIdAndDelete(req.params.id);
     res.json({ message: "Goal removed" });
   } else {
     res.status(404);
