@@ -4,11 +4,11 @@ const mongoose = require("mongoose");
 
 // Create a new budget
 const createBudget = async (req, res) => {
-  const { user, name, amount, period, startDate, endDate } = req.body;
+  const { name, amount, period, startDate, endDate } = req.body;
 
   try {
     const newBudget = new Budget({
-      user,
+      user: req.user._id, // Get the user ID from the token
       name,
       amount,
       period,
