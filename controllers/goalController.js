@@ -96,7 +96,7 @@ const updateGoal = asynvHandler(async (req, res) => {
 // @route   DELETE /api/goals/:id
 // @access  Private
 
-const deleteGoal = asyncHandler(async (req, res) => {
+const deleteGoal = asynvHandler(async (req, res) => {
   // Find the goal by ID and ensure it belongs to the current user
   const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
