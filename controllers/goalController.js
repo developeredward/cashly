@@ -96,16 +96,20 @@ const updateGoal = asynvHandler(async (req, res) => {
 // @route   DELETE /api/goals/:id
 // @access  Private
 
-const deleteGoal = asynvHandler(async (req, res) => {
+const deleteGoal = asyncHandler(async (req, res) => {
+  // Find the goal by ID and ensure it belongs to the current user
   const goal = await Goal.findOne({ _id: req.params.id, user: req.user._id });
 
   if (goal) {
-    await goal.findByIdAndDelete(req.params.id);
+    // Corrected: Use Goal.findByIdAndDelete directly
+    await Goal.findByIdAndDelete(req.params.id);
+
     res.json({ message: "Goal removed" });
   } else {
     res.status(404);
     throw new Error("Goal not found");
   }
 });
+
 
 module.exports = { getGoals, getGoal, createGoal, updateGoal, deleteGoal };
