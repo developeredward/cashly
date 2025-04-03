@@ -230,7 +230,7 @@ const Budget = () => {
           <Ionicons name="chevron-back-sharp" size={18} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.text, fontSize: 20 }]}>
-          Budgeting
+          Budgets
         </Text>
         <View
           style={[styles.navBtn, { backgroundColor: "transparent" }]}
