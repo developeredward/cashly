@@ -1,126 +1,136 @@
 const asyncHandler = require("express-async-handler");
-
 const Budget = require("../models/BudgetModel");
+const mongoose = require("mongoose");
 
-// @desc    Get all Budgets
-// @route   GET /api/budgets
-// @access  Public
-const getBudgets = asyncHandler(async (req, res) => {
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Not authorized");
+// Create a new budget
+const createBudget = async (req, res) => {
+  const { name, amount, period, startDate, endDate } = req.body;
+
+  try {
+    const newBudget = new Budget({
+      user: req.user._id, // Get the user ID from the token
+      name,
+      amount,
+      period,
+      startDate,
+      endDate,
+    });
+
+    await newBudget.save();
+
+    res.status(201).json({
+      message: "Budget created successfully",
+      budget: newBudget,
+    });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error creating budget", error: err.message });
   }
+};
 
-  const budgets = await Budget.find({ user: req.user._id });
-
-  res.status(200).json(budgets);
-});
-
-// @desc    Get single Budget
-// @route   GET /api/budgets/:id
-// @access  Public
-const getBudget = asyncHandler(async (req, res) => {
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Not authorized");
+// Get all budgets for a user
+const getBudgets = async (req, res) => {
+  try {
+    const budgets = await Budget.find({ user: req.user._id }); // Assuming user is authenticated and user id is passed
+    res.status(200).json({ budgets });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error fetching budgets", error: err.message });
   }
+};
 
-  const budget = await Budget.find({ _id: req.params.id, user: req.user._id });
+// Update a budget
+const updateBudget = async (req, res) => {
+  const { id } = req.params;
+  const { name, amount, spentAmount, period, startDate, endDate } = req.body;
 
-  if (!budget) {
-    res.status(404);
-    throw new Error("Budget not found");
+  try {
+    const budget = await Budget.findByIdAndUpdate(
+      id,
+      {
+        name,
+        amount,
+        spentAmount,
+        period,
+        startDate,
+        endDate,
+        updatedAt: Date.now(),
+      },
+      { new: true } // Return the updated budget
+    );
+
+    if (!budget) {
+      return res.status(404).json({ message: "Budget not found" });
+    }
+
+    res.status(200).json({
+      message: "Budget updated successfully",
+      budget,
+    });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error updating budget", error: err.message });
   }
+};
 
-  res.status(200).json(budget);
-});
+// Delete a budget
+const deleteBudget = async (req, res) => {
+  const { id } = req.params;
 
-// @desc    Create a Budget
-// @route   POST /api/budgets
-// @access  Public
+  try {
+    const budget = await Budget.findByIdAndDelete(id);
 
-const addBudget = asyncHandler(async (req, res) => {
-  if (
-    !req.body.amount ||
-    !req.body.period ||
-    !req.body.startDate ||
-    !req.body.endDate
-  ) {
-    res.status(400);
-    throw new Error("Please fill all fields!");
+    if (!budget) {
+      return res.status(404).json({ message: "Budget not found" });
+    }
+
+    res.status(200).json({ message: "Budget deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error deleting budget", error: err.message });
   }
+};
 
-  let budgetExists = await Budget.findOne({
-    user: req.user._id,
-    category: req.body.category,
-    period: req.body.period,
-  });
+// Get a specific budget by ID
+const getBudgetById = async (req, res) => {
+  const { id } = req.params;
 
-  if (budgetExists) {
-    res.status(400);
-    throw new Error("Budget already exists for this category and period");
+  // Check if the provided id is a valid ObjectId
+  console.log("Budget ID:", id);
+  try {
+    // Fetch the budget by ID and also ensure it belongs to the logged-in user
+    const budget = await Budget.findOne({
+      _id: id,
+      user: req.user._id, // Check that the budget belongs to the authenticated user
+    });
+
+    if (!budget) {
+      return res
+        .status(404)
+        .json({ message: "Budget not found or doesn't belong to the user" });
+    }
+
+    res.status(200).json({ budget });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error fetching budget", error: err.message });
   }
-
-  const budget = await Budget.create({
-    user: req.user._id,
-    category: req.body.category,
-    amount: req.body.amount,
-    period: req.body.period,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-  });
-
-  res.status(201).json(budget);
-});
-
-// @desc    Update a Budget
-// @route   PUT /api/budgets/:id
-// @access  Public
-
-const updateBudget = asyncHandler(async (req, res) => {
-  const budget = await Budget.findOne({
-    _id: req.params.id,
-    user: req.user._id,
-  });
-
-  if (!budget) {
-    res.status(404);
-    throw new Error("Budget not found");
-  }
-
-  budget.amount = req.body.amount || budget.amount;
-  budget.period = req.body.period || budget.period;
-  budget.startDate = req.body.startDate || budget.startDate;
-  budget.endDate = req.body.endDate || budget.endDate;
-  budget.updatedAt = Date.now();
-
-  await budget.save();
-  res.status(200).json(budget);
-});
-
-// @desc    Delete a Budget
-// @route   DELETE /api/budgets/:id
-// @access  Public
-
-const deleteBudget = asyncHandler(async (req, res) => {
-  const budget = await Budget.findOne({
-    _id: req.params.id,
-    user: req.user._id,
-  });
-
-  if (!budget) {
-    res.status(404);
-    throw new Error("Budget not found");
-  }
-
-  await budget.remove();
-  res.status(200).json({ message: "Budget removed" });
-});
+};
 
 module.exports = {
+  createBudget,
   getBudgets,
-  getBudget,
-  addBudget,
   updateBudget,
   deleteBudget,
+  getBudgetById,
 };

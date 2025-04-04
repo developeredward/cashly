@@ -122,19 +122,13 @@ const updateUser = asyncHandler(async (req, res) => {
 // @access  Private
 
 const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-
+  const user = await User.findById(req.user._id);
   if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
 
-  if (req.user._id.toString() !== user._id.toString() && !req.user.isAdmin) {
-    res.status(403);
-    throw new Error("You are not authorized to delete this user");
-  }
-
-  await User.deleteOne();
+  await user.deleteOne(); // Delete the logged-in user
 
   res.status(200).json({ message: "User removed" });
 });
