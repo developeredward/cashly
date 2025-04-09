@@ -13,7 +13,6 @@
 ## Front-End
 
 - [x] React.js
-- [x] Redux
-- [x] Redux Toolkit
+- [x] AsyncStorage
 - [x] React Router
 - [x] Axios
