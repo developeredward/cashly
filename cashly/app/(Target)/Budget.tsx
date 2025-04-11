@@ -190,8 +190,11 @@ const Budget = () => {
   };
 
   const handleDecreaseSpentAmount = (budget: any) => {
+    // Get the current spent amount from editedSpentAmount, if it exists, or fallback to budget.spentAmount
+    const currentAmount = parseFloat(editedSpentAmount) || budget.spentAmount;
+
     // Decrement the spent amount by 10, but don't go below 0
-    const newAmount = Math.max(budget.spentAmount - 10, 0);
+    const newAmount = Math.max(currentAmount - 10, budget.spentAmount);
     setEditedSpentAmount(newAmount.toString());
   };
 

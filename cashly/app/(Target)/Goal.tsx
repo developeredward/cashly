@@ -36,7 +36,7 @@ const Goal = () => {
   const [newGoal, setNewGoal] = useState({
     name: "",
     targetAmount: "",
-    period: "Monthly",
+    priority: "Medium",
     deadline: "",
   });
 
@@ -50,6 +50,7 @@ const Goal = () => {
     try {
       const data = await getGoals(); // Fetch Goals from your API
       if (Array.isArray(data)) {
+        console.log("Fetched Goals:", data); // Log the fetched data
         setGoals(data); // Ensure the response is an array before setting the state
       } else {
         setGoals([]); // Set to an empty array if the data is not an array
@@ -78,7 +79,7 @@ const Goal = () => {
 
   // Handle form submission
   const handleCreateGoal = async () => {
-    const { name, targetAmount, period, deadline } = newGoal;
+    const { name, targetAmount, priority, deadline } = newGoal;
 
     // Make sure all fields are filled
     if (!name || !targetAmount || !deadline) {
@@ -89,8 +90,8 @@ const Goal = () => {
     const GoalData = {
       name, // Name of the Goal
       targetAmount: parseFloat(targetAmount), // Ensure amount is a number
-      period, // e.g., "Monthly"
       deadline: new Date(deadline), // Ensure the date is in the correct format
+      priority, // Default priority value (adjust as needed)
     };
 
     try {
@@ -101,7 +102,7 @@ const Goal = () => {
       alert("Failed to create Goal.");
     }
   };
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string): string => {
     // Ensure the date string is valid
     const date = new Date(dateString);
 
@@ -142,7 +143,14 @@ const Goal = () => {
     }
 
     try {
+      const existingGoal = Goals.find((b) => b._id === GoalId);
+      if (!existingGoal) {
+        alert("Goal not found.");
+        return;
+      }
+
       const updatedGoal = {
+        ...existingGoal,
         currentAmount: enteredAmount,
       };
 
@@ -165,8 +173,11 @@ const Goal = () => {
   };
 
   const handleDecreaseSpentAmount = (Goal: any) => {
+    // Get the current spent amount from editedCurrentAmount, if it exists, or fallback to Goal.spentAmount
+    const currentAmount = parseFloat(editedCurrentAmount) || Goal.currentAmount;
+
     // Decrement the spent amount by 10, but don't go below 0
-    const newAmount = Math.max(Goal.spentAmount - 10, 0);
+    const newAmount = Math.max(currentAmount - 10, Goal.currentAmount);
     setEditedCurrentAmount(newAmount.toString());
   };
 
@@ -342,15 +353,15 @@ const Goal = () => {
                       <Text
                         style={[styles.detailsText, { color: colors.text }]}
                       >
-                        <Text style={styles.detailsLabel}>Period: </Text>
-                        {Goal.period}
+                        <Text style={styles.detailsLabel}>Priority: </Text>
+                        {Goal.priority}
                       </Text>
 
                       <Text
                         style={[styles.detailsText, { color: colors.text }]}
                       >
                         <Text style={styles.detailsLabel}>DeadLine: </Text>
-                        {formatDate(new Date(Goal.deadline))}
+                        {formatDate(Goal.deadline)}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -622,7 +633,7 @@ const Goal = () => {
                 fontSize: 16,
               }}
             >
-              Select Time Period
+              Priority
             </Text>
             <View
               style={{
@@ -634,7 +645,7 @@ const Goal = () => {
               }}
             >
               <TouchableOpacity
-                onPress={() => handleInputChange("period", "Monthly")}
+                onPress={() => handleInputChange("priority", "Low")}
                 style={[
                   styles.periodButton,
                   {
@@ -643,7 +654,7 @@ const Goal = () => {
                     borderWidth: 1,
                     flex: 1,
                   },
-                  newGoal.period === "Monthly" && {
+                  newGoal.priority === "Low" && {
                     backgroundColor: colors.primary,
                   },
                 ]}
@@ -654,14 +665,14 @@ const Goal = () => {
                     {
                       color: colors.text,
                     },
-                    newGoal.period === "Monthly" && styles.selectedPeriodText,
+                    newGoal.priority === "Low" && styles.selectedPeriodText,
                   ]}
                 >
-                  Monthly
+                  Low
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => handleInputChange("period", "Yearly")}
+                onPress={() => handleInputChange("priority", "Medium")}
                 style={[
                   styles.periodButton,
                   {
@@ -670,7 +681,7 @@ const Goal = () => {
                     borderWidth: 1,
                     flex: 1,
                   },
-                  newGoal.period === "Yearly" && {
+                  newGoal.priority === "Medium" && {
                     backgroundColor: colors.primary,
                   },
                 ]}
@@ -681,10 +692,37 @@ const Goal = () => {
                     {
                       color: colors.text,
                     },
-                    newGoal.period === "Yearly" && styles.selectedPeriodText,
+                    newGoal.priority === "Medium" && styles.selectedPeriodText,
                   ]}
                 >
-                  Yearly
+                  Medium
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleInputChange("priority", "High")}
+                style={[
+                  styles.periodButton,
+                  {
+                    backgroundColor: colors.background,
+                    borderColor: colors.border,
+                    borderWidth: 1,
+                    flex: 1,
+                  },
+                  newGoal.priority === "High" && {
+                    backgroundColor: colors.primary,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.periodText,
+                    {
+                      color: colors.text,
+                    },
+                    newGoal.priority === "High" && styles.selectedPeriodText,
+                  ]}
+                >
+                  High
                 </Text>
               </TouchableOpacity>
             </View>
