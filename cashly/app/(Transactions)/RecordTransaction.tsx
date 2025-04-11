@@ -26,7 +26,7 @@ import {
 import MyPicker from "../../components/Buttons/Picker";
 import PrimaryBtn from "../../components/Buttons/PrimaryBtn";
 import { handleImageRender } from "../../constants/handleImageRender";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Balance from "../../components/Balance/Balance";
 import { currencySymbol } from "../../constants/Currencies";
@@ -34,6 +34,7 @@ import { getProfile } from "../../services/profile/profile";
 
 const RecordTransactionScreen = () => {
   const { colors, dark } = useTheme();
+  const { name, amount } = useLocalSearchParams();
   const router = useRouter();
   const [allAccounts, setAllAccounts] = React.useState<
     { id: string; title: string; type: string; balance: number }[]
@@ -52,8 +53,8 @@ const RecordTransactionScreen = () => {
   ]);
   const [selectedType, setSelectedType] = React.useState("");
   const [form, setForm] = React.useState({
-    name: "",
-    amount: 0,
+    name: name || "",
+    amount: amount ? Number(amount) : 0.0,
     type: "",
     category: "",
     image: "",
@@ -330,6 +331,7 @@ const RecordTransactionScreen = () => {
                 <TextInput
                   style={[styles.amount, { color: colors.text }]}
                   placeholder="0.00"
+                  value={form.amount.toString()}
                   onChange={(e) =>
                     setForm({ ...form, amount: parseFloat(e.nativeEvent.text) })
                   }
