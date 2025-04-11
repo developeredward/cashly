@@ -167,9 +167,8 @@ export const getGoals = async () => {
 export const createGoal = async (data: {
   name: string; // Name of the goal
   targetAmount: number; // Total amount for the goal
-  period: string; // Period like "Daily", "Weekly", "Monthly", "Yearly"
-  deadline: Date; // Goal deadline
   priority: string; // Priority of the goal
+  deadline: Date; // Goal deadline
 }) => {
   const token = await SecureStore.getItemAsync("token");
   try {
@@ -178,7 +177,6 @@ export const createGoal = async (data: {
       {
         name: data.name, // Send the name of the goal
         targetAmount: data.targetAmount, // Total goal amount
-        period: data.period, // Goal period (Monthly, Yearly, etc.)
         deadline: data.deadline, // Goal deadline
         priority: data.priority || "Medium", // Goal priority
       },
