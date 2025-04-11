@@ -36,7 +36,9 @@
     "react-native-webview": "^13.13.5",
     "tesseract.js": "^6.0.0",
     "victory-native": "^41.16.1",
-    "@react-native-community/datetimepicker": "8.2.0"
+    "@react-native-community/datetimepicker": "8.2.0",
+    "expo-notifications": "~0.29.14",
+    "expo-device": "~7.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
