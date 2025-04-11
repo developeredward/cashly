@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// All API Routes 
+// All API Routes
 app.use("/api/v1/users", require("./routes/userRoutes"));
 app.use("/api/v1/user-summary", require("./routes/userSummaryRoutes"));
 app.use("/api/v1/accounts", require("./routes/accountRoutes"));
@@ -38,7 +38,7 @@ app.use(errorHandler);
 
 // Root Route
 app.get("/", (req, res) => {
-  res.send("Welcome to Cashly API");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 // WebSocket Connection
