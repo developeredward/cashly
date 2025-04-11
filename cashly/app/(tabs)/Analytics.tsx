@@ -115,6 +115,88 @@ const Analysis = () => {
     }, [timePeriod, selectedIndex])
   );
 
+  // const updateData = ({
+  //   data,
+  //   period,
+  //   index,
+  // }: {
+  //   data: {
+  //     id: string;
+  //     title: string;
+  //     amount: number;
+  //     type: string;
+  //     category: string;
+  //     account: string;
+  //     image: string;
+  //     dateTime: string;
+  //   }[];
+  //   period: "weekly" | "monthly";
+  //   index: number;
+  // }) => {
+  //   let categorizedData = {
+  //     Utilities: 0,
+  //     Subscription: 0,
+  //     Payments: 0,
+  //     "Other Expenses": 0,
+  //     Income: 0,
+  //   };
+
+  //   const categoryColors = {
+  //     Utilities: dark ? "#1DB954" : "#4CAF50",
+  //     Subscription: dark ? "#E74C3C" : "#FF5555",
+  //     Payments: dark ? "#FFB74D" : "#FFA726",
+  //     "Other Expenses": dark ? "#6A1B9A" : "#8E24AA",
+  //     Income: dark ? "#FFD700" : "#FFD700",
+  //   };
+
+  //   const now = new Date();
+  //   if (period === "weekly") {
+  //     let weekStart = new Date(now);
+  //     weekStart.setDate(now.getDate() - now.getDay() + 1 - index * 7);
+  //     let weekEnd = new Date(weekStart);
+  //     weekEnd.setDate(weekStart.getDate() + 6);
+
+  //     data.forEach((transaction) => {
+  //       const transactionDate = new Date(transaction.dateTime);
+
+  //       if (transactionDate >= weekStart && transactionDate <= weekEnd) {
+  //         const category = categorizeTransaction(
+  //           transaction.category,
+  //           transaction.type
+  //         );
+  //         categorizedData[category] += transaction.amount;
+  //       }
+  //     });
+  //   } else {
+  //     let monthStart = new Date(now.getFullYear(), index, 1);
+  //     let monthEnd = new Date(now.getFullYear(), index + 1, 0);
+
+  //     data.forEach(
+  //       (transaction: {
+  //         id: string;
+  //         title: string;
+  //         amount: number;
+  //         type: string;
+  //         category: string;
+  //         account: string;
+  //         image: string;
+  //         dateTime: string;
+  //       }) => {
+  //         const transactionDate: Date = new Date(transaction.dateTime);
+  //         if (transactionDate >= monthStart && transactionDate <= monthEnd) {
+  //           const category = categorizeTransaction(
+  //             transaction.category,
+  //             transaction.type
+  //           );
+
+  //           categorizedData[category] += transaction.amount;
+  //         }
+  //       }
+  //     );
+  //   }
+  //   setDataPoints(Object.values(categorizedData));
+  //   setCategoryColors(categoryColors);
+  // };
   const updateData = ({
     data,
     period,
@@ -149,17 +231,15 @@ const Analysis = () => {
       Income: dark ? "#FFD700" : "#FFD700",
     };
 
-    const now = new Date();
     if (period === "weekly") {
-      let weekStart = new Date(now);
-      weekStart.setDate(now.getDate() - now.getDay() + 1 - index * 7);
-      let weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekStart.getDate() + 6);
-
       data.forEach((transaction) => {
         const transactionDate = new Date(transaction.dateTime);
+        const dayOfMonth = transactionDate.getDate();
 
-        if (transactionDate >= weekStart && transactionDate <= weekEnd) {
+        // Get week index (0-based: 0 = 1st week, 1 = 2nd, etc.)
+        const transactionWeekIndex = Math.floor((dayOfMonth - 1) / 7);
+
+        if (transactionWeekIndex === index) {
           const category = categorizeTransaction(
             transaction.category,
             transaction.type
@@ -168,32 +248,20 @@ const Analysis = () => {
         }
       });
     } else {
-      let monthStart = new Date(now.getFullYear(), index, 1);
-      let monthEnd = new Date(now.getFullYear(), index + 1, 0);
+      data.forEach((transaction) => {
+        const transactionDate = new Date(transaction.dateTime);
+        const transactionMonth = transactionDate.getMonth();
 
-      data.forEach(
-        (transaction: {
-          id: string;
-          title: string;
-          amount: number;
-          type: string;
-          category: string;
-          account: string;
-          image: string;
-          dateTime: string;
-        }) => {
-          const transactionDate: Date = new Date(transaction.dateTime);
-          if (transactionDate >= monthStart && transactionDate <= monthEnd) {
-            const category = categorizeTransaction(
-              transaction.category,
-              transaction.type
-            );
-
-            categorizedData[category] += transaction.amount;
-          }
+        if (transactionMonth === index) {
+          const category = categorizeTransaction(
+            transaction.category,
+            transaction.type
+          );
+          categorizedData[category] += transaction.amount;
         }
-      );
+      });
     }
+
     setDataPoints(Object.values(categorizedData));
     setCategoryColors(categoryColors);
   };
