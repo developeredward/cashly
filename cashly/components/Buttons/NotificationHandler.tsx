@@ -2,13 +2,17 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const NotificationHandler = () => {
   const [notificationCount, setNotificationCount] = useState<number>(0);
 
   const { colors } = useTheme();
   return (
-    <TouchableOpacity style={styles.notificationContainer}>
+    <TouchableOpacity
+      onPress={() => router.push("/Notifications")}
+      style={styles.notificationContainer}
+    >
       <Text style={[styles.notificationCounter]}>
         {notificationCount
           ? notificationCount > 9
