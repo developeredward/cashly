@@ -64,11 +64,18 @@ const TransactionsSheet = ({
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filter, setFilter] = useState<string>("all");
+  const filters = ["all", "income", "expense"];
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const router = useRouter();
+  const [expanded, setExpanded] = useState(false);
+
+  const handleSelect = (selected: string) => {
+    setFilter(selected);
+    setExpanded(false);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -256,11 +263,7 @@ const TransactionsSheet = ({
                       </View>
                       <View>
                         <TouchableOpacity
-                          onPress={() => {
-                            setFilter(
-                              filter === "income" ? "expense" : "income"
-                            );
-                          }}
+                          onPress={() => setExpanded(!expanded)}
                           style={{
                             borderColor: dark
                               ? "#cccccc" + "20"
@@ -274,11 +277,53 @@ const TransactionsSheet = ({
                           }}
                         >
                           <MaterialCommunityIcons
-                            name="filter-variant"
+                            name={expanded ? "close" : "filter-variant"}
                             size={20}
                             color={dark ? "#cccccc" + "80" : "#000000"}
                           />
                         </TouchableOpacity>
+                        {expanded && (
+                          <View
+                            style={[
+                              styles.dropdown,
+                              {
+                                backgroundColor: colors.background,
+                              },
+                            ]}
+                          >
+                            {filters.map((filterItem, index) => (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => handleSelect(filterItem)}
+                                style={styles.option}
+                              >
+                                <Text
+                                  style={[
+                                    styles.optionText,
+                                    {
+                                      color: colors.text,
+                                      fontWeight:
+                                        filter === filterItem
+                                          ? "bold"
+                                          : "normal",
+                                    },
+                                  ]}
+                                >
+                                  {filterItem.charAt(0).toUpperCase() +
+                                    filterItem.slice(1)}
+                                </Text>
+                                {filter === filterItem && (
+                                  <MaterialCommunityIcons
+                                    name="check"
+                                    size={16}
+                                    color={primary}
+                                    style={{ marginLeft: 5 }}
+                                  />
+                                )}
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                        )}
                       </View>
                     </View>
                   </>
@@ -521,6 +566,27 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 20,
+  },
+  dropdown: {
+    marginTop: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+    position: "absolute",
+    width: 120,
+    right: 0,
+    top: 30,
+    zIndex: 100,
+  },
+  option: {
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  optionText: {
+    fontSize: 14,
+    fontFamily: "Poppins-Regular",
   },
   headContainer: {
     flexDirection: "row",
