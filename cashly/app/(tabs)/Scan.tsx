@@ -18,6 +18,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import ScanResultModal from "../../components/Scan/ScanResultModal";
 
 export default function ReceiptScanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -222,9 +223,15 @@ export default function ReceiptScanner() {
         )} */}
 
         {extractedText && (
-          <ScrollView style={styles.textContainer}>
-            <Text>{extractedText}</Text>
-          </ScrollView>
+          <ScanResultModal
+            visible={!!extractedText}
+            onClose={() => setExtractedText("")}
+            scanResult={extractedText}
+            onSave={(data) => {
+              console.log("Data to save:", data);
+              // Handle saving the data
+            }}
+          />
         )}
       </ScrollView>
     </View>
