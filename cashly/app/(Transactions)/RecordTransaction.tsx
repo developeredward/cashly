@@ -331,7 +331,7 @@ const RecordTransactionScreen = () => {
                 <TextInput
                   style={[styles.amount, { color: colors.text }]}
                   placeholder="0.00"
-                  value={form.amount.toString()}
+                  value={form.amount}
                   onChange={(e) =>
                     setForm({ ...form, amount: parseFloat(e.nativeEvent.text) })
                   }
