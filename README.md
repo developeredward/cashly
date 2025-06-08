@@ -14,8 +14,7 @@
 
 - [x] React.js
 - [x] AsyncStorage
-- [x] React Router
-- [x] Axios
+- [x] React Native
 
 Welcome Screen Light Mode             |  Welcome Screen Dark Mode 
 :-------------------------:|:-------------------------:
