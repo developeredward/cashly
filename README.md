@@ -13,7 +13,6 @@
 ## Front-End
 
 - [x] React.js
-- [x] AsyncStorage
 - [x] React Native
 
 Welcome Screen Light Mode             |  Welcome Screen Dark Mode 
