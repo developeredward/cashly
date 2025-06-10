@@ -12,7 +12,6 @@
 
 ## Front-End
 
-- [x] React.js
 - [x] React Native
 
 Welcome Screen Light Mode             |  Welcome Screen Dark Mode 
