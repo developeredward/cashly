@@ -11,6 +11,7 @@
 ## Front-End
 
 - [x] React Native
+- [x] Expo
 
 Welcome Screen Light Mode             |  Welcome Screen Dark Mode 
 :-------------------------:|:-------------------------:
